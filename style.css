@@ -2,7 +2,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   height: 100vh;
   display: flex;
   align-items: center;
@@ -10,8 +10,8 @@ body {
   position: relative;
   overflow: hidden;
 
-  /* Gradient background: orange → blue → white */
-  background: linear-gradient(to bottom right, #f28e36, #87CEEB, #ffffff);
+  /* Gradient background: orange → blue → stone gray */
+  background: linear-gradient(to bottom right, #f28e36, #87CEEB, #d3d3d3);
 }
 
 /* Gritty texture overlay */
@@ -21,7 +21,7 @@ body::before {
   top: 0; left: 0; right: 0; bottom: 0;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='1' cy='1' r='1' fill='rgba(0,0,0,0.25)'/%3E%3C/svg%3E");
   background-size: 100px 100px;
-  opacity: 0.25; /* more gritty */
+  opacity: 0.25; /* gritty effect */
   pointer-events: none;
   z-index: 0;
 }
@@ -48,10 +48,10 @@ header {
 
 /* Main text styles */
 h1 {
-  font-size: 4rem; /* chunkier */
+  font-size: 4rem; /* chunky */
   margin: 0.75rem 0;
-  font-weight: 900;
-  text-shadow: 2px 2px 6px rgba(0,0,0,0.22); /* subtle shadow */
+  font-weight: 900; /* heavy */
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.22);
   letter-spacing: 1px;
 }
 
@@ -69,7 +69,7 @@ h1 {
 .coming-soon {
   margin-top: 2rem;
   font-size: 2.5rem;
-  font-weight: 800;
-  color: #e8e8e8; /* light whitish-grey */
+  font-weight: 700;
+  color: #d8d8d8; /* light stone gray */
   text-shadow: 1px 1px 4px rgba(0,0,0,0.25);
 }
