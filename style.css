@@ -13,7 +13,7 @@ body {
   position: relative;
   overflow: hidden;
 
-  /* Gradient background: sage → warm orange */
+  /* Gradient background */
   background: linear-gradient(135deg, #d8e0d5 0%, #c7d2c7 25%, #b1c1ae 50%, #f0a56a 75%, #ea8f49 100%);
 }
 
@@ -39,7 +39,7 @@ body::before {
   left: 20px;
 }
 .logo {
-  height: 140px;   /* was 100px → increased ~40% */
+  height: 245px;   /* 1.75x bigger */
   width: auto;
   display: block;
 }
@@ -54,7 +54,7 @@ body::before {
 .hero h1 {
   font-weight: 900;
   letter-spacing: 0.02em;
-  font-size: clamp(1.3rem, 3.3vw, 2.75rem); /* +10% increase */
+  font-size: clamp(1.56rem, 4vw, 3.3rem); /* 1.2x bigger */
   margin: 0.4rem 0;
   text-shadow: 2px 2px 6px rgba(0,0,0,0.22);
 }
