@@ -13,21 +13,22 @@ body {
   position: relative;
   overflow: hidden;
 
-  /* Gradient background: sage → warm orange */
+  /* Gradient: sage → warm orange */
   background: linear-gradient(135deg, #d8e0d5 0%, #c7d2c7 25%, #b1c1ae 50%, #f0a56a 75%, #ea8f49 100%);
 }
 
-/* Texture overlay using your uploaded PNG */
+/* Real PNG texture overlay */
 body::before {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background: url("texture.png") repeat;
-  background-size: cover;
-  opacity: 0.35;   /* adjust grit strength */
-  mix-blend-mode: multiply;
+
+  background: url("texture.png") center center repeat;
+  background-size: cover;  /* makes it fill the screen */
+  opacity: 0.4;            /* adjust intensity (0.3–0.6 works well) */
+  mix-blend-mode: multiply; /* makes the black specks blend into gradient */
 }
 
 /* Keep content above */
