@@ -1,74 +1,119 @@
-/* Reset & base */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Montserrat', sans-serif;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-
-  /* Gradient background: orange → blue → stone gray */
-  background: linear-gradient(to bottom right, #f28e36, #87CEEB, #d3d3d3);
+/* Base layout */
+:root{
+  --orange: #FF6600;
+  --green:  #145A32;
+  --stone:  #d3d3d3;
 }
 
-/* Gritty texture overlay */
-body::before {
+/* Full-viewport canvas */
+html, body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: #111;
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+/* === Background: back to earlier vibe (sage -> warm orange) + gritty texture ===
+   Layer 1: soft diagonal gradient (sage/greenish to orange)
+   Layer 2/3: two noise overlays at different scales/rotations for heavier grit
+*/
+body::before,
+body::after {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='1' cy='1' r='1' fill='rgba(0,0,0,0.25)'/%3E%3C/svg%3E");
-  background-size: 100px 100px;
-  opacity: 0.25; /* gritty effect */
+  inset: 0;
   pointer-events: none;
   z-index: 0;
 }
 
-/* Wrapper */
-.page {
-  text-align: center;
-  width: 100%;
-  padding: 2rem;
-  z-index: 1;
-  position: relative;
+/* Main color gradient (similar to your “before” screenshot) */
+body {
+  background:
+    radial-gradient(1200px 700px at 15% 0%,
+      rgba(216,224,213,0.95) 0%,
+      rgba(216,224,213,0.85) 35%,
+      rgba(216,224,213,0.65) 50%,
+      rgba(216,224,213,0.35) 60%,
+      transparent 70%) ,              /* sage glow top-left */
+    linear-gradient(135deg,
+      #d8e0d5 0%,                      /* sage/greenish grey */
+      #c6d3c7 18%,
+      #b6c7b9 32%,
+      #a1b8a6 45%,
+      #8aa88f 58%,
+      #f1a86a 72%,                     /* warm ramp */
+      #ea9047 86%,
+      #e37f30 100%                     /* warm orange bottom-right */
+    );
 }
 
-/* Logo top-left */
-header {
-  position: absolute;
-  top: 30px;
-  left: 30px;
+/* Noise layer A (fine grain) */
+body::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='rgba(0,0,0,0.22)'>%3Ccircle cx='3' cy='5' r='1'/%3E%3Ccircle cx='28' cy='18' r='0.8'/%3E%3Ccircle cx='54' cy='42' r='1'/%3E%3Ccircle cx='80' cy='12' r='0.7'/%3E%3Ccircle cx='105' cy='60' r='1'/%3E%3Ccircle cx='16' cy='88' r='0.9'/%3E%3Ccircle cx='96' cy='100' r='0.9'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 120px 120px;
+  mix-blend-mode: multiply;
+  opacity: .28; /* more textured */
+}
+
+/* Noise layer B (coarser, rotated) */
+body::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 90 90'%3E%3Cg fill='rgba(0,0,0,0.2)'>%3Ccircle cx='6' cy='7' r='1'/%3E%3Ccircle cx='36' cy='26' r='1'/%3E%3Ccircle cx='70' cy='40' r='1'/%3E%3Ccircle cx='18' cy='60' r='1'/%3E%3Ccircle cx='58' cy='78' r='1'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 90px 90px;
+  mix-blend-mode: multiply;
+  opacity: .24;
+  transform: rotate(8deg) scale(1.1);
+}
+
+/* Content stacking above textures */
+.hero, .site-header { position: relative; z-index: 1; }
+
+/* Fixed top-left logo */
+.site-header {
+  position: fixed;
+  top: 24px;
+  left: 24px;
 }
 .logo {
-  height: 140px; /* bigger logo */
+  height: 140px;        /* adjust as needed */
   width: auto;
 }
 
-/* Main text styles */
-h1 {
-  font-size: 4rem; /* chunky */
-  margin: 0.75rem 0;
-  font-weight: 900; /* heavy */
-  text-shadow: 2px 2px 6px rgba(0,0,0,0.22);
-  letter-spacing: 1px;
+/* If your logo has a white box: blend it into the background (best fix is a transparent PNG). */
+.logo-blend {
+  mix-blend-mode: multiply;    /* white becomes less visible over the gradient */
+  filter: contrast(1.05) brightness(.98);
 }
 
-/* Orange BUILD */
-.build {
-  color: #FF6600;
+/* Centered hero text */
+.hero {
+  text-align: center;
+  padding: 2rem;
+  max-width: min(92vw, 1100px);
 }
 
-/* Green CLIMB */
-.climb {
-  color: #145A32;
+/* Chunky, professional headings (Montserrat 900) */
+.hero h1 {
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  font-size: clamp(2.4rem, 6vw, 5.2rem);
+  margin: 0.5rem 0;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.22); /* subtle, not heavy */
 }
 
-/* Coming soon */
+/* Colors per your spec */
+.build { color: var(--orange); }
+.climb { color: var(--green); }
+
+/* Coming Soon */
 .coming-soon {
-  margin-top: 2rem;
-  font-size: 2.5rem;
+  margin-top: clamp(1rem, 3.5vw, 2rem);
+  font-size: clamp(1.4rem, 3.2vw, 2.4rem);
   font-weight: 700;
   color: #d8d8d8; /* light stone gray */
   text-shadow: 1px 1px 4px rgba(0,0,0,0.25);
