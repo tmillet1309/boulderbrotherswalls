@@ -13,25 +13,23 @@ body {
   position: relative;
   overflow: hidden;
 
-  /* Gradient: sage → warm orange */
+  /* Gradient background: sage → warm orange */
   background: linear-gradient(135deg, #d8e0d5 0%, #c7d2c7 25%, #b1c1ae 50%, #f0a56a 75%, #ea8f49 100%);
 }
 
-/* Real PNG texture overlay */
+/* Texture overlay */
 body::before {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-
   background: url("texture.png") center center repeat;
-  background-size: cover;  /* makes it fill the screen */
-  opacity: 0.4;            /* adjust intensity (0.3–0.6 works well) */
-  mix-blend-mode: multiply; /* makes the black specks blend into gradient */
+  background-size: cover;
+  opacity: 0.4;
+  mix-blend-mode: multiply;
 }
 
-/* Keep content above */
 .hero, .site-header { position: relative; z-index: 1; }
 
 /* Logo top-left */
@@ -41,7 +39,7 @@ body::before {
   left: 20px;
 }
 .logo {
-  height: 100px;
+  height: 140px;   /* was 100px → increased ~40% */
   width: auto;
   display: block;
 }
@@ -56,7 +54,7 @@ body::before {
 .hero h1 {
   font-weight: 900;
   letter-spacing: 0.02em;
-  font-size: clamp(1.2rem, 3vw, 2.5rem); /* ~50% smaller than before */
+  font-size: clamp(1.3rem, 3.3vw, 2.75rem); /* +10% increase */
   margin: 0.4rem 0;
   text-shadow: 2px 2px 6px rgba(0,0,0,0.22);
 }
