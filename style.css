@@ -2,26 +2,26 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Arial Black', sans-serif;
+  font-family: 'Impact', 'Arial Black', sans-serif;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
-  
-  /* Gradient background */
-  background: linear-gradient(to bottom right, #d8e0d5, #f28e36);
+
+  /* Gradient background: orange → blue → white */
+  background: linear-gradient(to bottom right, #f28e36, #87CEEB, #ffffff);
 }
 
-/* Noise texture overlay (option B) */
+/* Gritty texture overlay */
 body::before {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='1' cy='1' r='1' fill='rgba(0,0,0,0.25)'/%3E%3C/svg%3E");
   background-size: 100px 100px;
-  opacity: 0.15;
+  opacity: 0.25; /* more gritty */
   pointer-events: none;
   z-index: 0;
 }
@@ -38,19 +38,21 @@ body::before {
 /* Logo top-left */
 header {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 30px;
+  left: 30px;
 }
 .logo {
-  height: 80px; /* adjust as needed */
+  height: 140px; /* bigger logo */
   width: auto;
 }
 
 /* Main text styles */
 h1 {
-  font-size: 3rem;
-  margin: 0.5rem 0;
+  font-size: 4rem; /* chunkier */
+  margin: 0.75rem 0;
+  font-weight: 900;
   text-shadow: 2px 2px 6px rgba(0,0,0,0.22); /* subtle shadow */
+  letter-spacing: 1px;
 }
 
 /* Orange BUILD */
@@ -66,8 +68,8 @@ h1 {
 /* Coming soon */
 .coming-soon {
   margin-top: 2rem;
-  font-size: 2rem;
-  font-weight: bold;
-  color: #d8e0d5; /* light grey/greenish tint */
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #e8e8e8; /* light whitish-grey */
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.25);
 }
