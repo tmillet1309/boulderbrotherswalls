@@ -1,7 +1,7 @@
 :root {
   --orange:#FF6600;
   --green:#145A32;
-  --sage:#d8e0d5;     /* light top-left color for text */
+  --sage:#d8e0d5;     /* light color like top-left */
 }
 
 html, body { height: 100%; }
@@ -14,11 +14,11 @@ body {
   position: relative;
   overflow: hidden;
 
-  /* gradient you love: sage → warm orange */
+  /* Gradient you loved */
   background: linear-gradient(135deg, #d8e0d5 0%, #c7d2c7 25%, #b1c1ae 50%, #f0a56a 75%, #ea8f49 100%);
 }
 
-/* texture overlay — 60% transparent (opacity 0.4) */
+/* Texture overlay */
 body::before {
   content: "";
   position: absolute;
@@ -27,43 +27,42 @@ body::before {
   z-index: 0;
   background: url("texture.png") center center repeat;
   background-size: cover;
-  opacity: 0.4;               /* 60% transparent */
+  opacity: 0.4;  /* 60% transparent look */
   mix-blend-mode: multiply;
 }
 
-/* keep content above texture */
-.hero, .site-header, .footer-note { position: relative; z-index: 1; }
+/* Keep content above texture */
+.hero, .site-header, .cta, .footer-note { position: relative; z-index: 1; }
 
-/* header: logo + CTA */
+/* Logo top-left */
 .site-header {
   position: fixed;
   top: 20px;
   left: 20px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
 }
 .logo {
-  height: 245px;   /* your current size; change here if needed */
+  height: 220px;  /* reduced 10% */
   width: auto;
   display: block;
 }
+
+/* CTA button top-right */
 .cta {
-  text-decoration: none;
+  position: fixed;
+  top: 40px;
+  right: 40px;
   font-weight: 800;
-  font-size: 0.95rem;
-  padding: 10px 16px;
+  font-size: 1rem;
+  padding: 12px 20px;
   border-radius: 10px;
   background: var(--orange);
   color: #fff;
   border: 2px solid rgba(0,0,0,0.08);
   box-shadow: 0 6px 16px rgba(0,0,0,0.18);
-  transition: transform .08s ease, box-shadow .08s ease, opacity .08s ease;
+  cursor: default;  /* visual only */
 }
-.cta:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(0,0,0,0.22); }
-.cta:active { transform: translateY(0); opacity: .9; }
 
-/* center text block */
+/* Center text block */
 .hero {
   text-align: center;
   padding: 2rem;
@@ -72,14 +71,14 @@ body::before {
 .hero h1 {
   font-weight: 900;
   letter-spacing: 0.02em;
-  font-size: clamp(1.56rem, 4vw, 3.3rem); /* your latest size */
+  font-size: clamp(1.56rem, 4vw, 3.3rem);
   margin: 0.35rem 0;
   text-shadow: 2px 2px 6px rgba(0,0,0,0.22);
 }
 .build { color: var(--green); }
 .climb { color: var(--orange); }
 
-/* bottom-center note */
+/* Bottom-center note */
 .footer-note {
   position: fixed;
   left: 50%;
@@ -87,14 +86,13 @@ body::before {
   transform: translateX(-50%);
   font-weight: 700;
   letter-spacing: 0.01em;
-  color: var(--sage);                 /* light text like the top-left */
+  color: var(--sage);
   text-shadow: 1px 1px 4px rgba(0,0,0,0.18);
   font-size: clamp(0.9rem, 1.8vw, 1.2rem);
   opacity: 0.95;
 }
 
-/* responsive tweak for small screens */
+/* Mobile tweak */
 @media (max-width: 640px){
-  .logo { height: 170px; }            /* scale logo down on phones */
-  .cta  { font-size: 0.85rem; padding: 8px 12px; }
-}
+  .logo { height: 170px; }
+  .cta { font-size: 0.85rem; padding: 8px 12px; top: 2
