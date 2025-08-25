@@ -1,0 +1,530 @@
+<!-- designer.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Boulder Brothers – Wall Designer</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --orange:#FF6600;
+    --green:#145A32;
+    --sage:#d8e0d5;
+    --ink:#0f1f14;
+    --grid:#9bb49f40;           /* light sage grid */
+    --stud:#567a6355;
+    --panel:#2d4b3f66;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    color:#102018;
+    background:
+      linear-gradient(135deg,#d8e0d5 0%,#c7d2c7 25%,#b1c1ae 50%,#f0a56a 75%,#ea8f49 100%);
+  }
+
+  .wrap{
+    display:grid;
+    grid-template-columns: 320px 1fr;
+    grid-template-rows: auto 1fr auto;
+    min-height:100%;
+    gap:0;
+  }
+
+  header, footer{
+    grid-column:1 / -1;
+    padding:14px 22px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    color:#143627;
+    text-shadow:0 1px 0 #ffffff40;
+  }
+  header .brand{display:flex;gap:12px;align-items:center}
+  header img{height:48px;width:auto}
+  header h1{font-size:1.1rem;margin:0;font-weight:900;letter-spacing:.02em}
+
+  .side{
+    background:#ffffffaa;
+    backdrop-filter: blur(2px);
+    padding:18px;
+    border-right:1px solid #00000010;
+  }
+
+  .side h2{margin:.2rem 0 .8rem;font-size:1.05rem}
+  .grid2{display:grid;grid-template-columns:1fr 1fr; gap:10px}
+  label{font-size:.8rem;color:#2a5443}
+  .field{display:flex;flex-direction:column;gap:6px}
+  input,select,button{
+    font:inherit;
+    padding:9px 10px;
+    border-radius:10px;
+    border:1px solid #00000022;
+    background:#fff;
+    outline:none;
+  }
+  input:focus,select:focus{border-color:#2a6b56}
+  .btn{background:var(--orange); color:#fff; border:none; font-weight:800; cursor:pointer}
+  .btn.secondary{background:#fff; color:#1c3d32; border:1px solid #00000020}
+  .btn.ghost{background:transparent; border:1px dashed #00000030; color:#214236}
+  .stack{display:flex;flex-direction:column;gap:10px}
+  .row{display:flex;gap:10px; align-items:center; flex-wrap:wrap}
+
+  .metrics{
+    margin-top:10px;
+    padding:10px;
+    border-radius:12px;
+    background:#f7faf8;
+    border:1px solid #00000010;
+    font-size:.92rem;
+  }
+
+  .palette{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:6px;
+  }
+  .swatch{
+    aspect-ratio:1/1; display:grid; place-items:center; border-radius:10px; cursor:pointer;
+    border:1px solid #00000020; background:#fff;
+  }
+  .swatch span{font-size:.75rem}
+
+  .canvas-wrap{
+    position:relative; overflow:hidden;
+    display:grid; align-items:center; justify-items:center; padding:10px;
+  }
+
+  /* Board area */
+  svg#board{width:100%; height:100%; max-height:calc(100vh - 160px); background:transparent}
+
+  .toolbar{
+    margin-top:12px; border-top:1px solid #00000012; padding-top:12px;
+  }
+
+  .prop-panel{
+    margin-top:12px; padding:10px; border:1px solid #00000010; border-radius:12px; background:#fafcfb;
+    display:none; gap:8px;
+  }
+  .prop-panel.show{display:grid}
+  .prop-panel label{font-size:.75rem}
+  .prop-panel input[type=range]{width:100%}
+
+  footer{color:#dfe8e2; justify-content:center; font-weight:700}
+  .link-btn{position:absolute; right:20px; top:16px; background:var(--orange); color:#fff; padding:10px 14px; border-radius:10px; font-weight:800; text-decoration:none}
+
+  @media (max-width:1024px){
+    .wrap{grid-template-columns: 1fr; grid-template-rows:auto auto 1fr auto}
+    .side{border-right:none;border-top:1px solid #00000010}
+    .canvas-wrap{order:3}
+  }
+</style>
+</head>
+<body>
+  <a class="link-btn" href="./index.html">← Back to Landing</a>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <img src="logo.png" alt="Boulder Brothers Logo" />
+        <h1>Wall Designer</h1>
+      </div>
+    </header>
+
+    <!-- Controls -->
+    <aside class="side">
+      <h2>Wall Size</h2>
+      <div class="grid2">
+        <div class="field">
+          <label>Width (ft)</label>
+          <input type="number" id="wFt" value="12" min="1">
+        </div>
+        <div class="field">
+          <label>Width (in)</label>
+          <input type="number" id="wIn" value="0" min="0" max="11">
+        </div>
+        <div class="field">
+          <label>Height (ft)</label>
+          <input type="number" id="hFt" value="8" min="1">
+        </div>
+        <div class="field">
+          <label>Height (in)</label>
+          <input type="number" id="hIn" value="0" min="0" max="11">
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="apply">Apply Size</button>
+        <button class="btn secondary" id="resetHolds">Clear Holds</button>
+      </div>
+
+      <div class="metrics" id="metrics">—</div>
+
+      <div class="toolbar">
+        <h2>Add Holds</h2>
+        <div class="palette">
+          <button class="swatch" data-shape="jug" title="Jug"><span>🟣 Jug</span></button>
+          <button class="swatch" data-shape="crimp" title="Crimp"><span>🔵 Crimp</span></button>
+          <button class="swatch" data-shape="sloper" title="Sloper"><span>🟢 Sloper</span></button>
+          <button class="swatch" data-shape="volume" title="Volume"><span>🟧 Vol</span></button>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <label>Color</label>
+          <input type="color" id="color" value="#FF6600">
+          <button class="btn ghost" id="save">Save Layout</button>
+          <button class="btn ghost" id="load">Load</button>
+          <button class="btn ghost" id="export">Export PNG</button>
+        </div>
+
+        <div id="propPanel" class="prop-panel">
+          <div class="field">
+            <label>Size</label>
+            <input type="range" id="size" min="12" max="120" value="48">
+          </div>
+          <div class="field">
+            <label>Rotation</label>
+            <input type="range" id="rot" min="0" max="359" value="0">
+          </div>
+          <button id="delete" class="btn secondary">Delete Selected</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Canvas -->
+    <section class="canvas-wrap">
+      <svg id="board" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"></svg>
+    </section>
+
+    <footer>Build together. Climb together.</footer>
+  </div>
+
+<script>
+(() => {
+  const board = document.getElementById('board');
+  const metricsEl = document.getElementById('metrics');
+  const colorEl = document.getElementById('color');
+
+  const inputs = {
+    wFt: document.getElementById('wFt'),
+    wIn: document.getElementById('wIn'),
+    hFt: document.getElementById('hFt'),
+    hIn: document.getElementById('hIn'),
+  };
+
+  const applyBtn = document.getElementById('apply');
+  const clearBtn = document.getElementById('resetHolds');
+  const saveBtn  = document.getElementById('save');
+  const loadBtn  = document.getElementById('load');
+  const exportBtn= document.getElementById('export');
+
+  const propPanel = document.getElementById('propPanel');
+  const sizeRange = document.getElementById('size');
+  const rotRange  = document.getElementById('rot');
+  const delBtn    = document.getElementById('delete');
+
+  let wall = { wInch: 144, hInch: 96 };
+  let scale = 1;      // SVG units per inch
+  let holdsLayer, gridLayer, patternId;
+  let selected = null;
+  const STORAGE_KEY = 'bb-wall-designer-v1';
+
+  // helpers
+  const inches = (ft, inch) => (Number(ft)||0)*12 + (Number(inch)||0);
+  const ceil = Math.ceil;
+
+  function computePanels(w,h){
+    const across = ceil(w/48);
+    const down   = ceil(h/48);
+    const base   = across * down;
+    const withCut = ceil(base * 1.10); // +10% cutting allowance
+    return { across, down, base, withCut };
+  }
+
+  function initSvgDefs(){
+    // Clear SVG
+    while(board.firstChild) board.removeChild(board.firstChild);
+
+    const defs = svg('defs');
+
+    // Transparent "cube" pattern (isometric lines)
+    patternId = 'cubePattern';
+    const pattern = svg('pattern',{id:patternId,patternUnits:'userSpaceOnUse',width:24,height:24});
+    pattern.appendChild(svg('path',{d:'M0 12 L12 0 L24 12 L12 24 Z', fill:'none', stroke:'#325c4a22', 'stroke-width':1}));
+    defs.appendChild(pattern);
+
+    board.appendChild(defs);
+
+    // layers
+    gridLayer = svg('g',{id:'grid'});
+    holdsLayer = svg('g',{id:'holds'});
+    board.appendChild(gridLayer);
+    board.appendChild(holdsLayer);
+  }
+
+  function drawWall(){
+    initSvgDefs();
+
+    const { wInch, hInch } = wall;
+
+    // scale wall to board viewBox nicely
+    // give 5% padding
+    const pad = 0.05;
+    const vbW = wInch * (1+2*pad);
+    const vbH = hInch * (1+2*pad);
+    board.setAttribute('viewBox', `${-wInch*pad} ${-hInch*pad} ${vbW} ${vbH}`);
+    scale = 1; // 1 unit = 1 inch in the viewBox
+
+    // Background rect with isometric cubes
+    gridLayer.appendChild(svg('rect',{
+      x:0,y:0,width:wInch,height:hInch, fill:`url(#${patternId})`, rx:2, ry:2
+    }));
+
+    // Stud markers every 16"
+    for(let x=16; x<wInch; x+=16){
+      gridLayer.appendChild(svg('line',{x1:x,y1:0,x2:x,y2:hInch, stroke:'var(--stud)', 'stroke-width':1}));
+    }
+    // Panel grid (48")
+    for(let x=48; x<wInch; x+=48){
+      gridLayer.appendChild(svg('line',{x1:x,y1:0,x2:x,y2:hInch, stroke:'var(--panel)', 'stroke-width':2}));
+    }
+    for(let y=48; y<hInch; y+=48){
+      gridLayer.appendChild(svg('line',{x1:0,y1:y,x2:wInch,y2:y, stroke:'var(--panel)', 'stroke-width':2}));
+    }
+
+    // Wall outline
+    gridLayer.appendChild(svg('rect',{
+      x:0,y:0,width:wInch,height:hInch, fill:'none', stroke:'#0c2b2180','stroke-width':3
+    }));
+
+    updateMetrics();
+  }
+
+  function updateMetrics(){
+    const { wInch, hInch } = wall;
+    const p = computePanels(wInch,hInch);
+    metricsEl.innerHTML = `
+      <div><strong>Wall:</strong> ${Math.floor(wInch/12)}’ ${wInch%12}" × ${Math.floor(hInch/12)}’ ${hInch%12}"</div>
+      <div>Panels across: <strong>${p.across}</strong> &nbsp; Panels down: <strong>${p.down}</strong></div>
+      <div>Total panels (48×48): <strong>${p.base}</strong></div>
+      <div>+10% cutting allowance → <strong>${p.withCut}</strong> panels</div>
+    `;
+  }
+
+  // create holds
+  const defaultSizes = {jug:56, crimp:36, sloper:48, volume:80};
+
+  function addHold(shape, color, x, y){
+    const g = svg('g',{
+      class:'hold', transform:`translate(${x||wall.wInch/2} ${y||wall.hInch/2}) rotate(0)`,
+      'data-shape':shape, 'data-size': defaultSizes[shape]||48, 'data-rot':0, 'data-color':color
+    });
+
+    const size = Number(g.getAttribute('data-size'));
+    g.appendChild(shapeNode(shape, size, color));
+    holdsLayer.appendChild(g);
+    makeDraggable(g);
+    select(g);
+  }
+
+  function shapeNode(shape, size, color){
+    // clear if exists
+    const ng = svg('g');
+    if(shape==='jug'){
+      ng.appendChild(svg('circle',{cx:0, cy:0, r:size/2, fill:color, stroke:'#00000030','stroke-width':1.5}));
+      ng.appendChild(svg('circle',{cx:-size*0.12, cy:-size*0.05, r:size*0.12, fill:'#ffffff66'}));
+    } else if(shape==='crimp'){
+      const w=size, h=size*0.45;
+      ng.appendChild(svg('rect',{x:-w/2,y:-h/2,width:w,height:h, rx:h*0.4, ry:h*0.4, fill:color, stroke:'#00000030','stroke-width':1.5}));
+    } else if(shape==='sloper'){
+      ng.appendChild(svg('ellipse',{cx:0,cy:0, rx:size*0.58, ry:size*0.40, fill:color, stroke:'#00000030','stroke-width':1.5}));
+    } else { // volume (triangle)
+      const s=size;
+      const path=`M ${-s/2} ${s/2} L 0 ${-s/2} L ${s/2} ${s/2} Z`;
+      ng.appendChild(svg('path',{d:path, fill:color, stroke:'#00000030','stroke-width':1.5}));
+    }
+    return ng;
+  }
+
+  // dragging / selecting
+  function makeDraggable(g){
+    let dragging=false, offset=null;
+
+    g.addEventListener('pointerdown', (e)=>{
+      select(g);
+      dragging=true;
+      const pt = svgPoint(e);
+      const m = g.getCTM();
+      offset = { x: pt.x - m.e, y: pt.y - m.f };
+      g.setPointerCapture(e.pointerId);
+    });
+    g.addEventListener('pointermove', (e)=>{
+      if(!dragging) return;
+      const pt = svgPoint(e);
+      const x = clamp(pt.x - offset.x, 0, wall.wInch);
+      const y = clamp(pt.y - offset.y, 0, wall.hInch);
+      const rot = Number(g.getAttribute('data-rot'))||0;
+      g.setAttribute('transform', `translate(${x} ${y}) rotate(${rot})`);
+    });
+    g.addEventListener('pointerup', ()=> dragging=false);
+    g.addEventListener('dblclick', ()=> { g.remove(); if(selected===g) select(null); });
+  }
+
+  function select(g){
+    selected = g;
+    if(!g){ propPanel.classList.remove('show'); return; }
+    propPanel.classList.add('show');
+    sizeRange.value = g.getAttribute('data-size');
+    rotRange.value  = g.getAttribute('data-rot');
+    colorEl.value   = hexFromColor(g.getAttribute('data-color'));
+  }
+
+  sizeRange.addEventListener('input', ()=>{
+    if(!selected) return;
+    const size = Number(sizeRange.value);
+    selected.setAttribute('data-size', size);
+    const color = selected.getAttribute('data-color');
+    const shape = selected.getAttribute('data-shape');
+    selected.replaceChildren(shapeNode(shape,size,color));
+  });
+
+  rotRange.addEventListener('input', ()=>{
+    if(!selected) return;
+    const rot = Number(rotRange.value);
+    selected.setAttribute('data-rot', rot);
+    const m = selected.getCTM(); // current translate
+    selected.setAttribute('transform', `translate(${m.e} ${m.f}) rotate(${rot})`);
+  });
+
+  colorEl.addEventListener('input', ()=>{
+    if(!selected) return;
+    const c = colorEl.value;
+    selected.setAttribute('data-color', c);
+    const size = Number(selected.getAttribute('data-size'));
+    const shape = selected.getAttribute('data-shape');
+    selected.replaceChildren(shapeNode(shape,size,c));
+  });
+
+  delBtn.addEventListener('click', ()=>{ if(selected){ selected.remove(); select(null);} });
+
+  // palette
+  document.querySelectorAll('.swatch').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      addHold(btn.dataset.shape, colorEl.value);
+    });
+  });
+
+  // controls
+  applyBtn.addEventListener('click', ()=>{
+    wall.wInch = inches(inputs.wFt.value, inputs.wIn.value);
+    wall.hInch = inches(inputs.hFt.value, inputs.hIn.value);
+    drawWall();
+  });
+
+  clearBtn.addEventListener('click', ()=>{
+    holdsLayer.replaceChildren();
+    select(null);
+  });
+
+  saveBtn.addEventListener('click', ()=>{
+    const data = {
+      wall, 
+      holds: [...holdsLayer.querySelectorAll('.hold')].map(h=>({
+        shape: h.getAttribute('data-shape'),
+        size:  Number(h.getAttribute('data-size')),
+        rot:   Number(h.getAttribute('data-rot')),
+        color: h.getAttribute('data-color'),
+        // extract translate from matrix
+        x: h.getCTM().e, y: h.getCTM().f
+      }))
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    toast('Saved');
+  });
+
+  loadBtn.addEventListener('click', ()=>{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return toast('Nothing saved yet');
+    const data = JSON.parse(raw);
+    wall = data.wall;
+    inputs.wFt.value = Math.floor(wall.wInch/12);
+    inputs.wIn.value = wall.wInch%12;
+    inputs.hFt.value = Math.floor(wall.hInch/12);
+    inputs.hIn.value = wall.hInch%12;
+    drawWall();
+    holdsLayer.replaceChildren();
+    data.holds.forEach(h=>{
+      const g = svg('g',{class:'hold',
+        transform:`translate(${h.x} ${h.y}) rotate(${h.rot})`,
+        'data-shape':h.shape, 'data-size':h.size, 'data-rot':h.rot, 'data-color':h.color
+      });
+      g.appendChild(shapeNode(h.shape,h.size,h.color));
+      holdsLayer.appendChild(g);
+      makeDraggable(g);
+    });
+    select(null);
+    toast('Loaded');
+  });
+
+  exportBtn.addEventListener('click', ()=>{
+    // export board SVG to PNG
+    const xml = new XMLSerializer().serializeToString(board);
+    const svg64 = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
+    const img = new Image();
+    img.onload = function(){
+      const c = document.createElement('canvas');
+      // scale export up a bit
+      c.width  = img.width  * 2;
+      c.height = img.height * 2;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = getComputedStyle(document.body).backgroundImage
+        ? '#d8e0d5' : '#fff';
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      const a = document.createElement('a');
+      a.href = c.toDataURL('image/png');
+      a.download = 'boulder-brothers-wall.png';
+      a.click();
+    };
+    img.src = svg64;
+  });
+
+  // utilities
+  function svg(tag, attrs={}){
+    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for(const [k,v] of Object.entries(attrs)) el.setAttribute(k,v);
+    return el;
+  }
+  function svgPoint(evt){
+    const pt = board.createSVGPoint();
+    pt.x = evt.clientX; pt.y = evt.clientY;
+    return pt.matrixTransform(board.getScreenCTM().inverse());
+  }
+  const clamp = (v,min,max)=> Math.max(min, Math.min(max, v));
+
+  function hexFromColor(c){
+    // handles rgb(...) or hex
+    if(!c) return '#FF6600';
+    if(c.startsWith('#')) return c;
+    const m = c.match(/(\d+),\s*(\d+),\s*(\d+)/);
+    if(!m) return '#FF6600';
+    const [r,g,b]=m.slice(1).map(Number);
+    return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+  }
+  function toast(t){
+    console.log(t);
+  }
+
+  // init
+  drawWall();
+
+  // keyboard delete
+  window.addEventListener('keydown', (e)=>{
+    if((e.key==='Delete'||e.key==='Backspace') && selected){
+      selected.remove(); select(null);
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
