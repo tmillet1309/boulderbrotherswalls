@@ -14,6 +14,8 @@
     --panel-outline:#1c3b31a8;
     --panel-fill:#d5b38a;         /* warm wood tone */
     --holes:#2d4b3fcc;            /* T-nut holes */
+    --nest-bg:#e8efe9aa;
+    --nest-stroke:#27493d40;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
@@ -22,7 +24,7 @@
     font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     color:#102018;
     background:linear-gradient(135deg,#d8e0d5 0%,#c7d2c7 25%,#b1c1ae 50%,#f0a56a 75%,#ea8f49 100%);
-    overflow-x:hidden; /* kill horizontal scroll on small screens */
+    overflow-x:hidden;
   }
 
   .wrap{
@@ -32,47 +34,26 @@
     grid-template-rows: auto 1fr auto;
   }
 
-  /* Header */
   header{
     grid-column:1 / -1;
     display:grid;
-    grid-template-columns: 220px 1fr 220px; /* logo | title | spacer */
+    grid-template-columns: 220px 1fr 220px;
     align-items:center;
     padding:12px 16px 4px;
   }
-  header img{height:198px;width:auto} /* ~90% of landing */
+  header img{height:198px;width:auto}
   header h1{
-    margin:0;
-    text-align:center;
-    font-weight:900;
-    letter-spacing:.01em;
-    font-size:3.2rem; /* ~2.75× bigger */
-    color:#0f2f24;
-    text-shadow:0 2px 0 #ffffff70;
+    margin:0;text-align:center;font-weight:900;letter-spacing:.01em;
+    font-size:3.2rem;color:#0f2f24;text-shadow:0 2px 0 #ffffff70;
   }
 
-  /* Sidebar card */
   .side{
-    width: 324px;                 /* fixed, so no horizontal scroll */
-    background:var(--card);
-    backdrop-filter: blur(3px);
-    margin:0 0 16px 16px;
-    padding:16px;
-    border-radius:14px;
-    border:1px solid #00000014;
-    align-self:start;
-    max-height: calc(100vh - 230px);
-    overflow-y:auto;
-    overflow-x:hidden;            /* force hide sideways scrolling */
+    width: 324px;background:var(--card);backdrop-filter: blur(3px);
+    margin:0 0 16px 16px;padding:16px;border-radius:14px;border:1px solid #00000014;
+    align-self:start;max-height: calc(100vh - 230px);overflow-y:auto;overflow-x:hidden;
   }
-
   .sec{margin:6px 0 16px}
-  .sec h2{
-    margin:0 0 10px;
-    font-size:1rem;
-    color:#1f4637;
-  }
-
+  .sec h2{margin:0 0 10px;font-size:1rem;color:#1f4637}
   .grid2{display:grid;grid-template-columns:1fr 1fr; gap:10px}
   .field{display:flex;flex-direction:column;gap:6px; min-width:0}
   label{font-size:.8rem;color:#2a5443}
@@ -82,21 +63,11 @@
   .btn{background:var(--orange);color:#fff;border:none;font-weight:800;cursor:pointer}
   .btn.secondary{background:#fff;color:#1c3d32;border:1px solid #00000020}
   .row{display:flex;gap:10px;flex-wrap:wrap}
-
-  .metrics{
-    margin-top:10px;padding:12px;border-radius:12px;
-    background:#f7faf8;border:1px solid #00000012;font-size:.95rem;line-height:1.3;
-  }
-
+  .metrics{margin-top:10px;padding:12px;border-radius:12px;background:#f7faf8;border:1px solid #00000012;font-size:.95rem;line-height:1.3}
   .palette{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
   .swatch{padding:10px;border:1px solid #00000020;border-radius:12px;background:#fff;cursor:pointer}
 
-  /* Canvas */
-  .canvas-wrap{
-    display:grid;align-items:center;justify-items:center;
-    padding:10px 20px 20px 10px;
-    background: transparent;      /* keeps gradient continuous */
-  }
+  .canvas-wrap{display:grid;align-items:center;justify-items:center;padding:10px 20px 20px 10px;background:transparent}
   svg#board{width:100%;height:100%;max-height:calc(100vh - 60px)}
 
   .prop-panel{display:none;margin-top:10px;gap:10px}
@@ -127,22 +98,10 @@
       <div class="sec">
         <h2>Wall Size</h2>
         <div class="grid2">
-          <div class="field">
-            <label>Width (ft)</label>
-            <input type="number" id="wFt" value="10" min="1">
-          </div>
-          <div class="field">
-            <label>Width (in)</label>
-            <input type="number" id="wIn" value="0" min="0" max="11">
-          </div>
-          <div class="field">
-            <label>Height (ft)</label>
-            <input type="number" id="hFt" value="10" min="1">
-          </div>
-          <div class="field">
-            <label>Height (in)</label>
-            <input type="number" id="hIn" value="0" min="0" max="11">
-          </div>
+          <div class="field"><label>Width (ft)</label><input type="number" id="wFt" value="10" min="1"></div>
+          <div class="field"><label>Width (in)</label><input type="number" id="wIn" value="0" min="0" max="11"></div>
+          <div class="field"><label>Height (ft)</label><input type="number" id="hFt" value="10" min="1"></div>
+          <div class="field"><label>Height (in)</label><input type="number" id="hIn" value="0" min="0" max="11"></div>
         </div>
         <div class="row" style="margin-top:10px">
           <button class="btn" id="apply">Apply Size</button>
@@ -152,11 +111,12 @@
       </div>
 
       <div class="sec">
-        <h2>Panels</h2>
-        <label style="font-size:.85rem;color:#2a5443;">
-          <input type="checkbox" id="panelMode"> Enable panel dragging
-        </label>
-        <button class="btn secondary" id="resetPanels" style="margin-top:6px;">Reset Panels</button>
+        <h2>Panel Nest</h2>
+        <div class="row">
+          <button class="btn secondary" id="addPanel">Add 48×48</button>
+          <button class="btn secondary" id="clearLoose">Clear Loose</button>
+        </div>
+        <small style="display:block;margin-top:6px;color:#2a5443">Drag panels out of the nest onto the wall. They clip visually at edges.</small>
       </div>
 
       <div class="sec">
@@ -201,10 +161,13 @@
 
   // panel & hole geometry
   const PANEL_SIZE      = 48; // inches
-  const HOLE_SPACING    = 8;  // inches between T-nuts
-  const HOLE_INSET      = 4;  // inset from panel edges
-  const HOLE_RADIUS_IN  = 0.6; // visual radius in inches
-  const SNAP_THRESHOLD  = 6;  // inches to snap a hold when released
+  const HOLE_SPACING    = 8;  // inches
+  const HOLE_INSET      = 4;  // inches
+  const HOLE_RADIUS_IN  = 0.6;
+  const SNAP_THRESHOLD  = 6;  // inches
+
+  // NEST (inventory) area width in inches
+  const NEST_W = 72; // ~6 ft tray on left
 
   const inputs = {
     wFt: document.getElementById('wFt'),
@@ -213,14 +176,14 @@
     hIn: document.getElementById('hIn'),
   };
 
-  const applyBtn = document.getElementById('apply');
-  const clearBtn = document.getElementById('resetHolds');
-  const saveBtn  = document.getElementById('save');
-  const loadBtn  = document.getElementById('load');
-  const exportBtn= document.getElementById('export');
-
-  const panelMode = document.getElementById('panelMode');
-  const resetPanelsBtn = document.getElementById('resetPanels');
+  // sidebar controls
+  const applyBtn  = document.getElementById('apply');
+  const clearBtn  = document.getElementById('resetHolds');
+  const saveBtn   = document.getElementById('save');
+  const loadBtn   = document.getElementById('load');
+  const exportBtn = document.getElementById('export');
+  const addPanelBtn = document.getElementById('addPanel');
+  const clearLooseBtn = document.getElementById('clearLoose');
 
   const propPanel = document.getElementById('propPanel');
   const sizeRange = document.getElementById('size');
@@ -228,14 +191,15 @@
   const delBtn    = document.getElementById('delete');
 
   let wall = { wInch: 120, hInch: 120 };
-  let holdsLayer, gridLayer, panelsLayer, patternId, holesLayer;
+  let bgLayer, wallGroup, panelsLayer, holesLayer, holdsLayer, looseLayer, nestLayer, defs;
+  let patternId;
   let selected = null;
+  let holePoints = [];  // global bolt coords
+  let offsetX = NEST_W; // wall x-offset to make room for nest
 
-  let holePoints = [];  // [{x,y}] global (wall) bolt coordinates for snapping
-
-  const inches = (ft, inch) => (Number(ft)||0)*12 + (Number(inch)||0);
   const ceil   = Math.ceil;
   const clamp  = (v,min,max)=> Math.max(min, Math.min(max, v));
+  const inches = (ft, inch) => (Number(ft)||0)*12 + (Number(inch)||0);
 
   function computePanels(w,h){
     const cols = ceil(w/PANEL_SIZE);
@@ -256,104 +220,127 @@
     return { cols, rows, base, total, wR, hR, cutPanels };
   }
 
-  function initSvgDefs(){
+  function initSvg(){
     while(board.firstChild) board.removeChild(board.firstChild);
-    const defs = svg('defs');
+    defs = svg('defs');
 
+    // cube pattern
     patternId = 'cubePattern';
     const pattern = svg('pattern',{id:patternId,patternUnits:'userSpaceOnUse',width:24,height:24});
     pattern.appendChild(svg('path',{d:'M0 12 L12 0 L24 12 L12 24 Z', fill:'none', stroke:'#325c4a22','stroke-width':1}));
     defs.appendChild(pattern);
 
+    // clipping path for wall
     const clip = svg('clipPath',{id:'wallClip'});
-    clip.appendChild(svg('rect',{id:'clipRect',x:0,y:0,width:wall.wInch,height:wall.hInch,rx:2,ry:2}));
+    clip.appendChild(svg('rect',{id:'clipRect',x:offsetX,y:0,width:wall.wInch,height:wall.hInch,rx:2,ry:2}));
     defs.appendChild(clip);
 
     board.appendChild(defs);
-    gridLayer   = svg('g',{id:'grid'});
-    panelsLayer = svg('g',{id:'panels','clip-path':'url(#wallClip)'});
-    holesLayer  = svg('g',{id:'holes','clip-path':'url(#wallClip)'});
-    holdsLayer  = svg('g',{id:'holds'});
-    board.appendChild(gridLayer);
-    board.appendChild(panelsLayer);
-    board.appendChild(holesLayer);
-    board.appendChild(holdsLayer);
+
+    // layers
+    bgLayer    = svg('g',{id:'bg'});                 board.appendChild(bgLayer);
+    nestLayer  = svg('g',{id:'nest'});               board.appendChild(nestLayer);
+    wallGroup  = svg('g',{id:'wallGroup'});          board.appendChild(wallGroup);
+    panelsLayer= svg('g',{id:'panels', 'clip-path':'url(#wallClip)'}); wallGroup.appendChild(panelsLayer);
+    holesLayer = svg('g',{id:'holes',  'clip-path':'url(#wallClip)'}); wallGroup.appendChild(holesLayer);
+    holdsLayer = svg('g',{id:'holds'});              board.appendChild(holdsLayer);
+    looseLayer = svg('g',{id:'loose'});              board.appendChild(looseLayer);
   }
 
-  function drawWall(){
-    initSvgDefs();
+  function draw(){
+    initSvg();
+
     const { wInch, hInch } = wall;
-    const pad = 0.05;
-    board.setAttribute('viewBox', `${-wInch*pad} ${-hInch*pad} ${wInch*(1+2*pad)} ${hInch*(1+2*pad)}`);
+    // expand viewBox to include nest + wall + small pad
+    const pad = 0.05, totalW = offsetX + wInch, totalH = hInch;
+    board.setAttribute('viewBox', `${-totalW*pad} ${-totalH*pad} ${totalW*(1+2*pad)} ${totalH*(1+2*pad)}`);
 
-    // subtle cube pattern backdrop
-    gridLayer.appendChild(svg('rect',{x:0,y:0,width:wInch,height:hInch,fill:`url(#${patternId})`,rx:2,ry:2}));
+    // --- Nest ---
+    drawNest();
 
-    // studs at 16"
-    for(let x=16; x<wInch; x+=16)
-      gridLayer.appendChild(svg('line',{x1:x,y1:0,x2:x,y2:hInch,stroke:'var(--stud)','stroke-width':1}));
+    // subtle cube pattern behind wall area only
+    bgLayer.appendChild(svg('rect',{x:offsetX,y:0,width:wInch,height:hInch,fill:`url(#${patternId})`,rx:2,ry:2}));
+    // studs 16" OC
+    for(let x=offsetX+16; x<offsetX+wInch; x+=16)
+      bgLayer.appendChild(svg('line',{x1:x,y1:0,x2:x,y2:hInch,stroke:'var(--stud)','stroke-width':1}));
+    // wall outline
+    bgLayer.appendChild(svg('rect',{x:offsetX,y:0,width:wInch,height:hInch,fill:'none',stroke:'#0c2b2180','stroke-width':3,rx:2,ry:2}));
 
-    // wall border
-    gridLayer.appendChild(svg('rect',{x:0,y:0,width:wInch,height:hInch,fill:'none',stroke:'#0c2b2180','stroke-width':3,rx:2,ry:2}));
-
-    // tiles + hole grid
-    buildPanelsAndHoles();
+    buildWallTilesAndHoles();
+    preloadNestPanels(); // only if empty
     updateMetrics();
   }
 
-  function buildPanelsAndHoles(){
+  function drawNest(){
+    nestLayer.replaceChildren();
+    const { hInch } = wall;
+    // tray background
+    nestLayer.appendChild(svg('rect',{x:4,y:4,width:offsetX-8,height:hInch-8,rx:10,ry:10,fill:'var(--nest-bg)',stroke:'var(--nest-stroke)','stroke-width':2}));
+    // label
+    nestLayer.appendChild(svg('text',{x:12,y:26, 'font-size':12, fill:'#27493d', 'font-weight':800}, 'NEST'));
+  }
+
+  function buildWallTilesAndHoles(){
     panelsLayer.replaceChildren();
     holesLayer.replaceChildren();
     holePoints = [];
 
     const { wInch, hInch } = wall;
-    const cols = ceil(wInch/PANEL_SIZE);
-    const rows = ceil(hInch/PANEL_SIZE);
+    const cols = Math.ceil(wInch/PANEL_SIZE);
+    const rows = Math.ceil(hInch/PANEL_SIZE);
     const lastW = (wInch % PANEL_SIZE) || PANEL_SIZE;
     const lastH = (hInch % PANEL_SIZE) || PANEL_SIZE;
 
     for(let c=0;c<cols;c++){
       for(let r=0;r<rows;r++){
-        const x = c*PANEL_SIZE, y = r*PANEL_SIZE;
+        const x = offsetX + c*PANEL_SIZE, y = r*PANEL_SIZE;
         const w = (c===cols-1)? lastW : PANEL_SIZE;
         const h = (r===rows-1)? lastH : PANEL_SIZE;
 
-        // solid panel
-        const panel = svg('rect',{x,y,width:w,height:h,fill: 'url(#wood'+w+'x'+h+')' });
-        // Add simple wood gradient per tile to avoid large defs reuse
+        // tile fill
         ensureWoodGradient(w,h);
+        const rect = svg('rect',{x, y, width:w, height:h, rx:2, ry:2,
+          fill:`url(#wood-${w}x${h})`, stroke:'var(--panel-outline)', 'stroke-width':2});
+        panelsLayer.appendChild(rect);
 
-        panel.setAttribute('fill', `url(#wood-${w}x${h})`);
-        panel.setAttribute('stroke', varTo('--panel-outline'));
-        panel.setAttribute('stroke-width', 2);
-        panel.setAttribute('rx', 2); panel.setAttribute('ry',2);
-
-        const g = svg('g',{class:'panel', transform:`translate(0 0)`,'data-w':w,'data-h':h});
-        g.appendChild(panel);
-
-        if(panelMode.checked) makePanelDraggable(g);
-        panelsLayer.appendChild(g);
-
-        // holes on this panel (global coords)
+        // bolt holes (global coords)
         const hx0 = x + HOLE_INSET;
         const hy0 = y + HOLE_INSET;
         for(let hx=hx0; hx<=x+w-HOLE_INSET+0.1; hx+=HOLE_SPACING){
           for(let hy=hy0; hy<=y+h-HOLE_INSET+0.1; hy+=HOLE_SPACING){
             holePoints.push({x:hx,y:hy});
-            holesLayer.appendChild(svg('circle',{cx:hx,cy:hy,r:HOLE_RADIUS_IN,fill:'none',stroke:varTo('--holes'),'stroke-width':1}));
+            holesLayer.appendChild(svg('circle',{cx:hx,cy:hy,r:HOLE_RADIUS_IN,fill:'none',stroke:'var(--holes)','stroke-width':1}));
           }
         }
       }
     }
   }
 
+  function preloadNestPanels(){
+    if (looseLayer.childNodes.length) return;
+    // make a tidy stack of 6 in the nest
+    const gap = 6, startX = 16, startY = 40;
+    for(let i=0;i<6;i++){
+      spawnLoosePanel(PANEL_SIZE, PANEL_SIZE, startX, startY + i*(PANEL_SIZE/2 + gap));
+    }
+  }
+
+  function spawnLoosePanel(w,h,x,y){
+    ensureWoodGradient(w,h);
+    const g = svg('g',{class:'loose-panel', transform:`translate(${x} ${y})`,'data-w':w,'data-h':h, 'clip-path':'url(#wallClip)'});
+    const r = svg('rect',{x:0,y:0,width:w,height:h,rx:2,ry:2, fill:`url(#wood-${w}x${h})`, stroke:'var(--panel-outline)','stroke-width':2});
+    g.appendChild(r);
+    looseLayer.appendChild(g);
+    makePanelDraggable(g,true); // true => from nest/inventory
+  }
+
+  // wood gradient per unique size
   function ensureWoodGradient(w,h){
     const id = `wood-${w}x${h}`;
     if (document.getElementById(id)) return;
-    const defs = board.querySelector('defs');
     const lg = svg('linearGradient',{id, x1:'0%',y1:'0%',x2:'0%',y2:'100%'});
-    lg.appendChild(svg('stop',{offset:'0%','stop-color':shade(varTo('--panel-fill'),1.08)}));
-    lg.appendChild(svg('stop',{offset:'100%','stop-color':shade(varTo('--panel-fill'),0.92)}));
+    lg.appendChild(svg('stop',{offset:'0%','stop-color':shade(getVar('--panel-fill'),1.08)}));
+    lg.appendChild(svg('stop',{offset:'100%','stop-color':shade(getVar('--panel-fill'),0.92)}));
     defs.appendChild(lg);
   }
 
@@ -370,10 +357,10 @@
     `;
   }
 
-  /* Holds */
+  /* Holds (same behavior; snap to nearest bolt on mouseup) */
   const defaultSizes = {jug:56, crimp:36, sloper:48, volume:80};
   function addHold(shape, color, x, y){
-    const g = svg('g',{class:'hold',transform:`translate(${x||wall.wInch/2} ${y||wall.hInch/2}) rotate(0)`,
+    const g = svg('g',{class:'hold',transform:`translate(${x||offsetX + wall.wInch/2} ${y||wall.hInch/2}) rotate(0)`,
       'data-shape':shape,'data-size':defaultSizes[shape]||48,'data-rot':0,'data-color':color});
     const size = Number(g.getAttribute('data-size'));
     g.appendChild(shapeNode(shape,size,color));
@@ -397,24 +384,17 @@
   function makeHoldDraggable(g){
     let dragging=false, offset=null;
     g.addEventListener('pointerdown',(e)=>{select(g);dragging=true;const pt=svgPoint(e);const m=g.getCTM();offset={x:pt.x-m.e,y:pt.y-m.f};g.setPointerCapture(e.pointerId);});
-    g.addEventListener('pointermove',(e)=>{if(!dragging)return;const pt=svgPoint(e);const x=clamp(pt.x-offset.x,0,wall.wInch);const y=clamp(pt.y-offset.y,0,wall.hInch);const rot=Number(g.getAttribute('data-rot'))||0;g.setAttribute('transform',`translate(${x} ${y}) rotate(${rot})`);});
+    g.addEventListener('pointermove',(e)=>{if(!dragging)return;const pt=svgPoint(e);const x=pt.x-offset.x;const y=pt.y-offset.y;const rot=Number(g.getAttribute('data-rot'))||0;g.setAttribute('transform',`translate(${x} ${y}) rotate(${rot})`);});
     g.addEventListener('pointerup',()=>{dragging=false; snapHoldToNearestBolt(g);});
-
-    // scroll wheel while dragging = resize
     g.addEventListener('wheel',(e)=>{if(selected!==g)return;e.preventDefault();const delta=(e.deltaY<0?4:-4);const ns=clamp(Number(g.getAttribute('data-size'))+delta,12,140);g.setAttribute('data-size',ns);g.replaceChildren(shapeNode(g.getAttribute('data-shape'),ns,g.getAttribute('data-color')));sizeRange.value=ns;},{passive:false});
-
     g.addEventListener('dblclick',()=>{g.remove();if(selected===g)select(null);});
   }
-
   function snapHoldToNearestBolt(g){
     if(!holePoints.length) return;
-    // current center
     const m = g.getCTM();
     let best = null, bestD = Infinity;
     for(const p of holePoints){
-      const dx = p.x - m.e;
-      const dy = p.y - m.f;
-      const d  = Math.hypot(dx,dy);
+      const dx = p.x - m.e, dy = p.y - m.f, d = Math.hypot(dx,dy);
       if (d < bestD){ bestD = d; best = p; }
     }
     if(best && bestD <= SNAP_THRESHOLD){
@@ -423,13 +403,107 @@
     }
   }
 
-  /* Panels */
-  function makePanelDraggable(g){
+  /* Panels – now draggable ALWAYS (left-click), including from the nest) */
+  function makePanelDraggable(g, isLoose=false){
     let dragging=false, offset=null;
-    g.addEventListener('pointerdown',(e)=>{dragging=true;const pt=svgPoint(e);const m=g.getCTM();offset={x:pt.x-m.e,y:pt.y-m.f};g.setPointerCapture(e.pointerId);g.firstChild.style.cursor='grabbing';});
-    g.addEventListener('pointermove',(e)=>{if(!dragging)return;const pt=svgPoint(e);const x=clamp(pt.x-offset.x,0,wall.wInch-1);const y=clamp(pt.y-offset.y,0,wall.hInch-1);g.setAttribute('transform',`translate(${x} ${y})`);});
-    g.addEventListener('pointerup',()=>{dragging=false;g.firstChild.style.cursor='grab';});
+    g.style.cursor='grab';
+    g.addEventListener('pointerdown',(e)=>{
+      dragging=true;const pt=svgPoint(e);const m=g.getCTM();
+      offset={x:pt.x-m.e,y:pt.y-m.f};g.setPointerCapture(e.pointerId);g.style.cursor='grabbing';
+    });
+    g.addEventListener('pointermove',(e)=>{
+      if(!dragging)return;
+      const pt=svgPoint(e);
+      const x=pt.x-offset.x, y=pt.y-offset.y;
+      g.setAttribute('transform',`translate(${x} ${y})`);
+    });
+    g.addEventListener('pointerup',()=>{dragging=false;g.style.cursor='grab';});
   }
+
+  // Sidebar actions
+  document.querySelectorAll('.swatch').forEach(b=>b.addEventListener('click',()=>addHold(b.dataset.shape,colorEl.value)));
+
+  addPanelBtn.addEventListener('click',()=>{
+    // place a new panel near top of nest
+    spawnLoosePanel(PANEL_SIZE,PANEL_SIZE, 16, 40);
+  });
+  clearLooseBtn.addEventListener('click',()=>{looseLayer.replaceChildren();});
+
+  applyBtn.addEventListener('click',()=>{
+    wall.wInch=inches(inputs.wFt.value,inputs.wIn.value);
+    wall.hInch=inches(inputs.hFt.value,inputs.hIn.value);
+    // update clip rect and redraw
+    draw();
+  });
+
+  clearBtn.addEventListener('click',()=>{holdsLayer.replaceChildren();select(null);});
+
+  saveBtn.addEventListener('click',()=>{
+    const data={
+      wall,
+      holds:[...holdsLayer.querySelectorAll('.hold')].map(h=>({
+        shape:h.getAttribute('data-shape'),size:+h.getAttribute('data-size'),
+        rot:+h.getAttribute('data-rot'),color:h.getAttribute('data-color'),
+        x:h.getCTM().e,y:h.getCTM().f
+      })),
+      loose:[...looseLayer.querySelectorAll('.loose-panel')].map(p=>({
+        w:+p.getAttribute('data-w'),h:+p.getAttribute('data-h'),
+        x:p.getCTM().e,y:p.getCTM().f
+      }))
+    };
+    localStorage.setItem('bb-wall-designer-v2',JSON.stringify(data));
+  });
+
+  loadBtn.addEventListener('click',()=>{
+    const raw=localStorage.getItem('bb-wall-designer-v2'); if(!raw) return;
+    const d=JSON.parse(raw);
+    wall=d.wall;
+    inputs.wFt.value=Math.floor(wall.wInch/12);
+    inputs.wIn.value=wall.wInch%12;
+    inputs.hFt.value=Math.floor(wall.hInch/12);
+    inputs.hIn.value=wall.hInch%12;
+    draw();
+    // holds
+    holdsLayer.replaceChildren();
+    (d.holds||[]).forEach(h=>{
+      const g=svg('g',{class:'hold',transform:`translate(${h.x} ${h.y}) rotate(${h.rot})`,
+        'data-shape':h.shape,'data-size':h.size,'data-rot':h.rot,'data-color':h.color});
+      g.appendChild(shapeNode(h.shape,h.size,h.color)); holdsLayer.appendChild(g); makeHoldDraggable(g);
+    });
+    // loose
+    looseLayer.replaceChildren();
+    (d.loose||[]).forEach(p=> spawnLoosePanel(p.w,p.h,p.x,p.y));
+    select(null);
+  });
+
+  exportBtn.addEventListener('click',()=>{
+    const xml=new XMLSerializer().serializeToString(board);
+    const url='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(xml);
+    const img=new Image();
+    img.onload=function(){
+      const c=document.createElement('canvas'); c.width=img.width*2; c.height=img.height*2;
+      const ctx=c.getContext('2d'); ctx.drawImage(img,0,0,c.width,c.height);
+      const a=document.createElement('a'); a.href=c.toDataURL('image/png'); a.download='boulder-brothers-wall.png'; a.click();
+    };
+    img.src=url;
+  });
+
+  // Utils
+  function svg(tag,attrs={},text){
+    const el=document.createElementNS('http://www.w3.org/2000/svg',tag);
+    for(const[k,v] of Object.entries(attrs)) el.setAttribute(k,v);
+    if(text) el.textContent=text;
+    return el;
+  }
+  function svgPoint(evt){const pt=board.createSVGPoint();pt.x=evt.clientX;pt.y=evt.clientY;return pt.matrixTransform(board.getScreenCTM().inverse());}
+  function getVar(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim();}
+  function shade(hex,f){const n=parseInt(hex.slice(1),16), r=n>>16, g=n>>8&255, b=n&255;const rr=Math.min(255,Math.max(0,Math.round(r*f)));const gg=Math.min(255,Math.max(0,Math.round(g*f)));const bb=Math.min(255,Math.max(0,Math.round(b*f)));return '#'+[rr,gg,bb].map(x=>x.toString(16).padStart(2,'0')).join('');}
+
+  // Init
+  draw();
+
+  // keyboard delete for selected hold
+  window.addEventListener('keydown',(e)=>{if((e.key==='Delete'||e.key==='Backspace')&&selected){selected.remove();select(null);}});
 
   function select(g){
     selected=g;
@@ -437,81 +511,11 @@
     propPanel.classList.add('show');
     sizeRange.value=g.getAttribute('data-size');
     rotRange.value=g.getAttribute('data-rot');
-    document.getElementById('color').value = toHex(g.getAttribute('data-color'));
+    document.getElementById('color').value = '#FF6600';
   }
-  rotRange.addEventListener('input',()=>{if(!selected)return;const rot=Number(rotRange.value);selected.setAttribute('data-rot',rot);const m=selected.getCTM();selected.setAttribute('transform',`translate(${m.e} ${m.f}) rotate(${rot})`);});
-  sizeRange.addEventListener('input',()=>{if(!selected)return;const s=Number(sizeRange.value);selected.setAttribute('data-size',s);selected.replaceChildren(shapeNode(selected.getAttribute('data-shape'),s,selected.getAttribute('data-color')));});
+  rotRange.addEventListener('input',()=>{if(!selected)return;const rot=+rotRange.value;selected.setAttribute('data-rot',rot);const m=selected.getCTM();selected.setAttribute('transform',`translate(${m.e} ${m.f}) rotate(${rot})`);});
+  sizeRange.addEventListener('input',()=>{if(!selected)return;const s=+sizeRange.value;selected.setAttribute('data-size',s);selected.replaceChildren(shapeNode(selected.getAttribute('data-shape'),s,selected.getAttribute('data-color')));});
   delBtn.addEventListener('click',()=>{if(selected){selected.remove();select(null);}});
-
-  document.querySelectorAll('.swatch').forEach(b=>b.addEventListener('click',()=>addHold(b.dataset.shape,colorEl.value)));
-
-  // size/apply
-  applyBtn.addEventListener('click',()=>{
-    wall.wInch=inches(inputs.wFt.value,inputs.wIn.value);
-    wall.hInch=inches(inputs.hFt.value,inputs.hIn.value);
-    drawWall();
-  });
-
-  clearBtn.addEventListener('click',()=>{holdsLayer.replaceChildren();select(null);});
-  panelMode.addEventListener('change',()=>buildPanelsAndHoles());
-  resetPanelsBtn.addEventListener('click',()=>buildPanelsAndHoles());
-
-  // save/load/export
-  saveBtn.addEventListener('click',()=>{
-    const data={wall,panelsMode:panelMode.checked,holds:[...holdsLayer.querySelectorAll('.hold')].map(h=>({shape:h.getAttribute('data-shape'),size:Number(h.getAttribute('data-size')),rot:Number(h.getAttribute('data-rot')),color:h.getAttribute('data-color'),x:h.getCTM().e,y:h.getCTM().f}))};
-    localStorage.setItem('bb-wall-designer-v1',JSON.stringify(data));
-  });
-  loadBtn.addEventListener('click',()=>{
-    const raw=localStorage.getItem('bb-wall-designer-v1');if(!raw)return;
-    const d=JSON.parse(raw);
-    wall=d.wall;
-    inputs.wFt.value=Math.floor(wall.wInch/12);
-    inputs.wIn.value=wall.wInch%12;
-    inputs.hFt.value=Math.floor(wall.hInch/12);
-    inputs.hIn.value=wall.hInch%12;
-    drawWall();
-    holdsLayer.replaceChildren();
-    (d.holds||[]).forEach(h=>{
-      const g=svg('g',{class:'hold',transform:`translate(${h.x} ${h.y}) rotate(${h.rot})`,'data-shape':h.shape,'data-size':h.size,'data-rot':h.rot,'data-color':h.color});
-      g.appendChild(shapeNode(h.shape,h.size,h.color));
-      holdsLayer.appendChild(g);
-      makeHoldDraggable(g);
-    });
-    panelMode.checked=!!d.panelsMode;
-    buildPanelsAndHoles();
-    select(null);
-  });
-  exportBtn.addEventListener('click',()=>{
-    const xml=new XMLSerializer().serializeToString(board);
-    const url='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(xml);
-    const img=new Image();
-    img.onload=function(){
-      const c=document.createElement('canvas');
-      c.width=img.width*2;c.height=img.height*2;
-      const ctx=c.getContext('2d');
-      ctx.drawImage(img,0,0,c.width,c.height);
-      const a=document.createElement('a');
-      a.href=c.toDataURL('image/png');a.download='boulder-brothers-wall.png';a.click();
-    };
-    img.src=url;
-  });
-
-  // utils
-  function svg(tag,attrs={}){const el=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const[k,v]of Object.entries(attrs))el.setAttribute(k,v);return el;}
-  function svgPoint(evt){const pt=board.createSVGPoint();pt.x=evt.clientX;pt.y=evt.clientY;return pt.matrixTransform(board.getScreenCTM().inverse());}
-  function toHex(c){if(!c)return'#FF6600';if(c.startsWith('#'))return c;const m=c.match(/(\d+),\s*(\d+),\s*(\d+)/);if(!m)return'#FF6600';const[r,g,b]=m.slice(1).map(Number);return'#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');}
-  function varTo(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim();}
-  function shade(hex,f){ // simple hex shade
-    const n=parseInt(hex.slice(1),16), r=n>>16, g=n>>8&255, b=n&255;
-    const rr=Math.min(255,Math.max(0,Math.round(r*f)));
-    const gg=Math.min(255,Math.max(0,Math.round(g*f)));
-    const bb=Math.min(255,Math.max(0,Math.round(b*f)));
-    return '#'+[rr,gg,bb].map(x=>x.toString(16).padStart(2,'0')).join('');
-  }
-
-  // init
-  drawWall();
-  window.addEventListener('keydown',(e)=>{if((e.key==='Delete'||e.key==='Backspace')&&selected){selected.remove();select(null);}});
 })();
 </script>
 </body>
