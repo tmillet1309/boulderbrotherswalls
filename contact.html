@@ -177,49 +177,71 @@
   <script>
     // TODO: Replace with your Google Apps Script deployed URL after setup
     const ENDPOINT = 'https://script.google.com/macros/s/AKfycbwo4TNEaJUeTIq0_YeV3zLrpvAu1QNy4sQk1rYk6bfyC8N2uJqR1FhmaM8_DKlrE60TUg/exec';
+const form = document.getElementById('quoteForm');
+const errorBox = document.getElementById('errorBox');
+const successBox = document.getElementById('successBox');
 
-    const form = document.getElementById('quoteForm');
-    const errorBox = document.getElementById('errorBox');
-    const successBox = document.getElementById('successBox');
+function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+// Accepts any formatting, but needs 10+ digits total
+function validPhone(v){ return v.replace(/\D/g,'').length >= 10; }
 
-    function validEmail(v){ return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(v); }
-    function validPhone(v){ return /[0-9]{7,}/.test(v.replace(/[^0-9]/g,'')); }
+function setInvalid(el, on) {
+  el.classList.toggle('invalid', !!on);
+}
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      errorBox.style.display = 'none';
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  errorBox.style.display = 'none';
+  errorBox.textContent = '';
 
-      const name  = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const phone = document.getElementById('phone').value.trim();
+  const nameEl  = document.getElementById('name');
+  const emailEl = document.getElementById('email');
+  const phoneEl = document.getElementById('phone');
 
-      // client-side required validation
-      if (!name || !validEmail(email) || !validPhone(phone)) {
-        errorBox.style.display = 'block';
-        return;
-      }
+  const name  = nameEl.value.trim();
+  const email = emailEl.value.trim();
+  const phone = phoneEl.value.trim();
 
-      // send to backend (Apps Script)
-      try {
-        const res = await fetch(ENDPOINT, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ name, email, phone })
-        });
+  let problems = [];
 
-        if (!res.ok) throw new Error('Network response was not ok');
-        // show success message
-        form.style.display = 'none';
-        successBox.style.display = 'block';
-      } catch (err) {
-        // If backend not ready, at least show success text (optional)
-        // Uncomment next two lines to show success even without backend:
-        // form.style.display = 'none';
-        // successBox.style.display = 'block';
-        errorBox.textContent = 'Submission failed. Please try again in a moment.';
-        errorBox.style.display = 'block';
-      }
+  setInvalid(nameEl,  false);
+  setInvalid(emailEl, false);
+  setInvalid(phoneEl, false);
+
+  if (!name) {
+    problems.push('• Name is required.');
+    setInvalid(nameEl, true);
+  }
+  if (!validEmail(email)) {
+    problems.push('• Enter a valid email (e.g., name@example.com).');
+    setInvalid(emailEl, true);
+  }
+  if (!validPhone(phone)) {
+    problems.push('• Phone needs at least 10 digits (formatting like (555) 555-5555 is fine).');
+    setInvalid(phoneEl, true);
+  }
+
+  if (problems.length) {
+    errorBox.innerHTML = problems.join('<br>');
+    errorBox.style.display = 'block';
+    return;
+  }
+
+  try {
+    const res = await fetch(ENDPOINT, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ name, email, phone })
     });
-  </script>
+    if (!res.ok) throw new Error('Network response was not ok');
+
+    form.style.display = 'none';
+    successBox.style.display = 'block';
+  } catch (err) {
+    errorBox.textContent = 'Submission failed. Please try again in a moment.';
+    errorBox.style.display = 'block';
+  }
+});
+</script>
 </body>
 </html>
