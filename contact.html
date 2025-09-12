@@ -171,15 +171,17 @@
 <!-- BB PATCH v1 END: form fields -->
 
 
-        <div class="success" id="successBox">
-          <h1>Thanks for contacting us</h1>
-          <p>You will receive a phone call and email within 48 hours.</p>
-        </div>
-      </div>
-    </main>
+        <!-- BB PATCH v2 START: success box -->
+<div class="success" id="successBox" style="display:none; text-align:center; padding:24px 8px;">
+  <h1 style="font-family: 'Montserrat', sans-serif; font-weight: 900; color:#fff; margin:0 0 8px;">
+    Thanks for contacting us
+  </h1>
+  <p style="margin:0; color: rgba(255,255,255,0.9);">
+    You will receive a phone call and email within 48 hours.
+  </p>
+</div>
+<!-- BB PATCH v2 END: success box -->
 
-    <footer class="footer-note">More coming soon...</footer>
-  </div>
 
   <script>
     // TODO: Replace with your Google Apps Script deployed URL after setup
