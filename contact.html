@@ -142,20 +142,25 @@
         <p class="contact-subtitle">Tell us how to reach you and we’ll connect within 48 hours.</p>
 
         <form id="quoteForm" novalidate>
-          <div class="field">
-            <label class="label" for="name">Name *</label>
-            <input class="input" id="name" name="name" type="text" required />
-          </div>
+<div class="field">
+  <label class="label" for="name">Name *</label>
+  <input class="input" id="name" name="name" type="text" required
+         placeholder="Jane Doe" />
+</div>
 
-          <div class="field">
-            <label class="label" for="email">Email *</label>
-            <input class="input" id="email" name="email" type="email" required />
-          </div>
+<div class="field">
+  <label class="label" for="email">Email *</label>
+  <input class="input" id="email" name="email" type="email" required
+         placeholder="name@example.com" />
+</div>
 
-          <div class="field">
-            <label class="label" for="phone">Phone *</label>
-            <input class="input" id="phone" name="phone" type="tel" required placeholder="555-555-5555" />
-          </div>
+<div class="field">
+  <label class="label" for="phone">Phone *</label>
+  <input class="input" id="phone" name="phone" type="tel" required
+         inputmode="tel" autocomplete="tel"
+         placeholder="(555) 555-5555 or 5555555555" />
+</div>
+
 
           <div class="error" id="errorBox">Please complete all required fields with valid information.</div>
 
