@@ -59,6 +59,8 @@ body::before {
 
 /* --- Reuse your CTA unchanged (except positioning now handled by .top-actions) --- */
 .cta {
+  display: inline-block;
+  text-decoration: none;      /* new */
   font-family: 'Montserrat', sans-serif;
   font-weight: 800;
   font-size: 1rem;
@@ -68,10 +70,11 @@ body::before {
   color: #fff;
   border: 2px solid rgba(0,0,0,0.08);
   box-shadow: 0 6px 16px rgba(0,0,0,0.18);
-  cursor: default; /* visual only */
+  cursor: pointer;            /* changed from default */
   line-height: 1;
   white-space: nowrap;
 }
+
 
 /* --- New nav pills (Home / FAQ) --- */
 .nav-pill {
