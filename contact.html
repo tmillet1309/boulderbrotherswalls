@@ -40,9 +40,7 @@
       color: rgba(255,255,255,0.85);
     }
 
-    .field {
-      margin-bottom: 16px;
-    }
+    .field { margin-bottom: 16px; padding-right: 8px; }          /* right padding to avoid edge */
     .label {
       display: block;
       font-weight: 800;
@@ -51,7 +49,9 @@
       color: #fff;
     }
     .input {
+      box-sizing: border-box;
       width: 100%;
+      margin-right: 8px;                                         /* right margin so it doesn’t touch edge */
       padding: 12px 14px;
       border-radius: 10px;
       border: 2px solid rgba(255,255,255,0.22);
@@ -60,8 +60,10 @@
       outline: none;
       font-size: 1rem;
     }
-    .input:focus {
-      border-color: rgba(255,255,255,0.45);
+    .input:focus { border-color: rgba(255,255,255,0.45); }
+    .input.invalid {
+      border-color: #ff9e9e !important;
+      box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.12);
     }
 
     .actions {
@@ -120,6 +122,11 @@
       .contact-main{ padding: 96px 16px 64px; }
       .contact-card{ padding: 22px; }
     }
+ /* Place in your <style> on contact.html or in style.css */
+.field { padding-right: 8px; }
+.input { box-sizing: border-box; width: 100%; margin-right: 8px; }
+.input.invalid { border-color:#ff9e9e !important; box-shadow:0 0 0 2px rgba(255,0,0,.12); }
+
   </style>
 </head>
 <body>
@@ -141,164 +148,126 @@
         <h1 class="contact-title">Get a Quote</h1>
         <p class="contact-subtitle">Tell us how to reach you and we’ll connect within 48 hours.</p>
 
-        <!-- BB PATCH v1 START: form fields -->
-<form id="quoteForm" novalidate>
-  <div class="field">
-    <label class="label" for="name">Name *</label>
-    <input class="input" id="name" name="name" type="text" required
-           placeholder="Jane Doe" />
+        <!-- ==================== BB PATCH v7 START: form fields ==================== -->
+        <form id="quoteForm" novalidate>
+          <div class="field">
+            <label class="label" for="name">Name *</label>
+            <input class="input" id="name" name="name" type="text" required
+                   placeholder="Jane Doe" />
+          </div>
+
+          <div class="field">
+            <label class="label" for="email">Email *</label>
+            <input class="input" id="email" name="email" type="email" required
+                   placeholder="name@example.com" />
+          </div>
+
+          <div class="field">
+            <label class="label" for="phone">Phone *</label>
+            <input class="input" id="phone" name="phone" type="tel" required
+                   inputmode="tel" autocomplete="tel"
+                   placeholder="(555) 555-5555 or 5555555555" />
+          </div>
+
+          <div class="error" id="errorBox">Please complete all required fields with valid information.</div>
+
+          <div class="actions">
+            <button type="submit" class="btn-submit">Submit</button>
+          </div>
+        </form>
+        <!-- ==================== BB PATCH v7 END: form fields ====================== -->
+
+        <!-- ==================== BB PATCH v7 START: success box ==================== -->
+        <div class="success" id="successBox">
+          <h1>Thanks for contacting us</h1>
+          <p>You will receive a phone call and email within 48 hours.</p>
+        </div>
+        <!-- ==================== BB PATCH v7 END: success box ====================== -->
+      </div>
+    </main>
+
+    <footer class="footer-note">More coming soon...</footer>
   </div>
 
-  <div class="field">
-    <label class="label" for="email">Email *</label>
-    <input class="input" id="email" name="email" type="email" required
-           placeholder="name@example.com" />
-  </div>
-
-  <div class="field">
-    <label class="label" for="phone">Phone *</label>
-    <input class="input" id="phone" name="phone" type="tel" required
-           inputmode="tel" autocomplete="tel"
-           placeholder="(555) 555-5555 or 5555555555" />
-  </div>
-
-  <div class="error" id="errorBox">Please complete all required fields with valid information.</div>
-
-  <div class="actions">
-    <button type="submit" class="btn-submit">Submit</button>
-  </div>
-</form>
-<!-- BB PATCH v1 END: form fields -->
-
-
-        <!-- BB PATCH v2 START: success box -->
-<div class="success" id="successBox" style="display:none; text-align:center; padding:24px 8px;">
-  <h1 style="font-family: 'Montserrat', sans-serif; font-weight: 900; color:#fff; margin:0 0 8px;">
-    Thanks for contacting us
-  </h1>
-  <p style="margin:0; color: rgba(255,255,255,0.9);">
-    You will receive a phone call and email within 48 hours.
-  </p>
-</div>
-<!-- BB PATCH v2 END: success box -->
-
-
+  <!-- ==================== BB PATCH v7 START: submit + enter + success UX JS ==================== -->
   <script>
-    // TODO: Replace with your Google Apps Script deployed URL after setup
-    const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxWg_aCsGyAFpi-TkeO3KkNT5pc-2rQu1ru5cnJWRglprUx-HwGYAxNB6XoVnSqHEzpiA/exec';
-    
-const form = document.getElementById('quoteForm');
-const errorBox = document.getElementById('errorBox');
-const successBox = document.getElementById('successBox');
+  // ✅ Your deployed Google Apps Script Web App URL (must end with /exec)
+  const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxL2XjPWhW8eTXRQgiQq70QtacIvdplRteaHqLPyakpnCtql4qVtxlCyKtkGupzt-20Cw/exec';
 
-function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-// Accepts any formatting, but needs 10+ digits total
-function validPhone(v){ return v.replace(/\D/g,'').length >= 10; }
+  document.addEventListener('DOMContentLoaded', () => {
+    const form       = document.getElementById('quoteForm');
+    const errorBox   = document.getElementById('errorBox');
+    const successBox = document.getElementById('successBox');
+    const inputs     = Array.from(form.querySelectorAll('input'));
 
-function setInvalid(el, on) {
-  el.classList.toggle('invalid', !!on);
-}
+    function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+    // Accepts 10–15 digits total; any separators OK (also accepts 10 straight digits)
+    function validPhone(v){ const d = v.replace(/\D/g,''); return d.length >= 10 && d.length <= 15; }
+    const mark = (el, bad) => el.classList.toggle('invalid', !!bad);
 
-<!-- BB PATCH v1 START: submit handler -->
-<script>
-/* keep your existing ENDPOINT line above this block, or add it here:
-const ENDPOINT = 'https://script.google.com/macros/s/YOUR_EXEC/exec';
-*/
+    // ENTER should submit from any input
+    inputs.forEach(el => {
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          form.requestSubmit(); // same as clicking the Submit button
+        }
+      });
+    });
 
-const form = document.getElementById('quoteForm');
-const errorBox = document.getElementById('errorBox');
-const successBox = document.getElementById('successBox');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); // prevent page refresh
+      errorBox.style.display = 'none';
+      errorBox.textContent = '';
 
-function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-// Accepts 10–15 digits total; any separators OK (also accepts 10 straight digits)
-function validPhone(v){ const d = v.replace(/\D/g,''); return d.length >= 10 && d.length <= 15; }
+      const nameEl  = document.getElementById('name');
+      const emailEl = document.getElementById('email');
+      const phoneEl = document.getElementById('phone');
 
-function setInvalid(el, on) {
-  el.classList.toggle('invalid', !!on);
-}
+      const name  = nameEl.value.trim();
+      const email = emailEl.value.trim();
+      const phone = phoneEl.value.trim();
 
-<!-- BB PATCH v2 START: submit + enter + success UX -->
-<script>
-// Keep your ENDPOINT line here (must end with /exec):
-// const ENDPOINT = 'https://script.google.com/macros/s/YOUR_EXEC/exec';
+      let problems = [];
+      mark(nameEl, false); mark(emailEl, false); mark(phoneEl, false);
 
-document.addEventListener('DOMContentLoaded', () => {
-  const form       = document.getElementById('quoteForm');
-  const errorBox   = document.getElementById('errorBox');
-  const successBox = document.getElementById('successBox');
-  const inputs     = Array.from(form.querySelectorAll('input'));
+      if (!name)              { problems.push('• Name is required.'); mark(nameEl,  true); }
+      if (!validEmail(email)) { problems.push('• Enter a valid email (e.g., name@example.com).'); mark(emailEl, true); }
+      if (!validPhone(phone)) { problems.push('• Phone needs at least 10 digits (e.g., (555) 555-5555 or 5555555555).'); mark(phoneEl, true); }
 
-  function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-  function validPhone(v){ const d = v.replace(/\D/g,''); return d.length >= 10 && d.length <= 15; }
-  function setInvalid(el, on){ el.classList.toggle('invalid', !!on); }
+      if (problems.length) {
+        errorBox.innerHTML = problems.join('<br>');
+        errorBox.style.display = 'block';
+        return;
+      }
 
-  // ENTER should submit from any input
-  inputs.forEach(el => {
-    el.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        form.requestSubmit(); // same as clicking the Submit button
+      try {
+        // Use x-www-form-urlencoded to avoid CORS preflight
+        const body = new URLSearchParams({ name, email, phone }).toString();
+        const res  = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body
+        });
+
+        const text = await res.text();
+        let json; try { json = JSON.parse(text); } catch { json = { ok:false, error:text }; }
+
+        if (!res.ok || !json.ok) throw new Error(json.error || 'Server error');
+
+        // ✅ Clear UX: hide form, show thank-you message
+        form.style.display = 'none';
+        successBox.style.display = 'block';
+        // Optional: prevent back button from re-post confusion
+        history.replaceState({}, '', location.pathname + '#thanks');
+      } catch (err) {
+        console.error('Submit failed:', err);
+        errorBox.textContent = 'Submission failed. Please try again in a moment.';
+        errorBox.style.display = 'block';
       }
     });
   });
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault(); // prevent page refresh
-    errorBox.style.display = 'none';
-    errorBox.textContent = '';
-
-    const nameEl  = document.getElementById('name');
-    const emailEl = document.getElementById('email');
-    const phoneEl = document.getElementById('phone');
-
-    const name  = nameEl.value.trim();
-    const email = emailEl.value.trim();
-    const phone = phoneEl.value.trim();
-
-    let problems = [];
-    setInvalid(nameEl,  false);
-    setInvalid(emailEl, false);
-    setInvalid(phoneEl, false);
-
-    if (!name)              { problems.push('• Name is required.'); setInvalid(nameEl,  true); }
-    if (!validEmail(email)) { problems.push('• Enter a valid email (e.g., name@example.com).'); setInvalid(emailEl, true); }
-    if (!validPhone(phone)) { problems.push('• Phone needs at least 10 digits (e.g., (555) 555-5555 or 5555555555).'); setInvalid(phoneEl, true); }
-
-    if (problems.length) {
-      errorBox.innerHTML = problems.join('<br>');
-      errorBox.style.display = 'block';
-      return;
-    }
-
-    try {
-      // Use x-www-form-urlencoded to avoid CORS preflight
-      const body = new URLSearchParams({ name, email, phone }).toString();
-      const res  = await fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body
-      });
-
-      const text = await res.text();
-      let json; try { json = JSON.parse(text); } catch { json = { ok:false, error:text }; }
-
-      if (!res.ok || !json.ok) throw new Error(json.error || 'Server error');
-
-      // ✅ Clear UX: hide form, show thank-you message
-      form.style.display = 'none';
-      successBox.style.display = 'block';
-      // Optional: prevent back button from re-post confusion
-      history.replaceState({}, '', location.pathname + '#thanks');
-    } catch (err) {
-      console.error('Submit failed:', err);
-      errorBox.textContent = 'Submission failed. Please try again in a moment.';
-      errorBox.style.display = 'block';
-    }
-  });
-});
-</script>
-<!-- BB PATCH v2 END: submit + enter + success UX -->
-
-<!-- BB PATCH v1 END: submit handler -->
+  </script>
+  <!-- ==================== BB PATCH v7 END: submit + enter + success UX JS ====================== -->
 </body>
 </html>
