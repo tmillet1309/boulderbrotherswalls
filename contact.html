@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Get a Quote – Boulder Brothers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Page layout */
+    .contact-wrap {
+      min-height: 100dvh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+    .contact-main {
+      display: grid;
+      place-items: center;
+      padding: 120px 20px 80px;
+    }
+    .contact-card {
+      width: min(640px, 92vw);
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(255,255,255,0.18);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      padding: 28px;
+      backdrop-filter: blur(6px);
+    }
+
+    .contact-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      margin: 0 0 16px;
+      color: #fff;
+    }
+    .contact-subtitle {
+      margin: 0 0 24px;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+    .label {
+      display: block;
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 2px solid rgba(255,255,255,0.22);
+      background: rgba(0,0,0,0.25);
+      color: #fff;
+      outline: none;
+      font-size: 1rem;
+    }
+    .input:focus {
+      border-color: rgba(255,255,255,0.45);
+    }
+
+    .actions {
+      margin-top: 18px;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    /* Reuse your top-right pill style for Submit */
+    .btn-submit {
+      text-decoration: none;
+      display: inline-block;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 12px 20px;
+      border-radius: 10px;
+      background: var(--orange);
+      color: #fff;
+      border: 2px solid rgba(0,0,0,0.08);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+      cursor: pointer;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .error {
+      color: #ffd3d3;
+      font-size: 0.95rem;
+      margin-top: 8px;
+      display: none;
+    }
+
+    /* Success screen */
+    .success {
+      display: none;
+      text-align: center;
+      padding: 24px 8px;
+    }
+    .success h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      margin: 0 0 8px;
+      color: #fff;
+    }
+    .success p {
+      margin: 0;
+      color: rgba(255,255,255,0.9);
+      font-size: 1.05rem;
+    }
+
+    @media (max-width: 640px){
+      .contact-main{ padding: 96px 16px 64px; }
+      .contact-card{ padding: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="contact-wrap">
+    <!-- keep your logo -->
+    <header class="site-header">
+      <img src="logo.png" alt="Boulder Brothers Logo" class="logo" />
+    </header>
+
+    <!-- same top-right nav -->
+    <nav class="top-actions">
+      <a class="nav-pill" href="index.html">Home</a>
+      <a class="nav-pill" href="faq.html">FAQ</a>
+      <a class="cta" href="contact.html">Get a Quote</a>
+    </nav>
+
+    <main class="contact-main">
+      <div class="contact-card" id="formCard">
+        <h1 class="contact-title">Get a Quote</h1>
+        <p class="contact-subtitle">Tell us how to reach you and we’ll connect within 48 hours.</p>
+
+        <form id="quoteForm" novalidate>
+          <div class="field">
+            <label class="label" for="name">Name *</label>
+            <input class="input" id="name" name="name" type="text" required />
+          </div>
+
+          <div class="field">
+            <label class="label" for="email">Email *</label>
+            <input class="input" id="email" name="email" type="email" required />
+          </div>
+
+          <div class="field">
+            <label class="label" for="phone">Phone *</label>
+            <input class="input" id="phone" name="phone" type="tel" required placeholder="555-555-5555" />
+          </div>
+
+          <div class="error" id="errorBox">Please complete all required fields with valid information.</div>
+
+          <div class="actions">
+            <button type="submit" class="btn-submit">Submit</button>
+          </div>
+        </form>
+
+        <div class="success" id="successBox">
+          <h1>Thanks for contacting us</h1>
+          <p>You will receive a phone call and email within 48 hours.</p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer-note">More coming soon...</footer>
+  </div>
+
+  <script>
+    // TODO: Replace with your Google Apps Script deployed URL after setup
+    const ENDPOINT = 'https://script.google.com/macros/s/YOUR-DEPLOYED-ID/exec';
+
+    const form = document.getElementById('quoteForm');
+    const errorBox = document.getElementById('errorBox');
+    const successBox = document.getElementById('successBox');
+
+    function validEmail(v){ return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(v); }
+    function validPhone(v){ return /[0-9]{7,}/.test(v.replace(/[^0-9]/g,'')); }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.style.display = 'none';
+
+      const name  = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      // client-side required validation
+      if (!name || !validEmail(email) || !validPhone(phone)) {
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      // send to backend (Apps Script)
+      try {
+        const res = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ name, email, phone })
+        });
+
+        if (!res.ok) throw new Error('Network response was not ok');
+        // show success message
+        form.style.display = 'none';
+        successBox.style.display = 'block';
+      } catch (err) {
+        // If backend not ready, at least show success text (optional)
+        // Uncomment next two lines to show success even without backend:
+        // form.style.display = 'none';
+        // successBox.style.display = 'block';
+        errorBox.textContent = 'Submission failed. Please try again in a moment.';
+        errorBox.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
