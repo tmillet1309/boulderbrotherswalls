@@ -46,11 +46,20 @@ body::before {
   display: block;
 }
 
-/* CTA button top-right */
-.cta {
+/* --- Top-right actions container --- */
+.top-actions {
   position: fixed;
   top: 40px;
   right: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+}
+
+/* --- Reuse your CTA unchanged (except positioning now handled by .top-actions) --- */
+.cta {
+  font-family: 'Montserrat', sans-serif;
   font-weight: 800;
   font-size: 1rem;
   padding: 12px 20px;
@@ -59,8 +68,57 @@ body::before {
   color: #fff;
   border: 2px solid rgba(0,0,0,0.08);
   box-shadow: 0 6px 16px rgba(0,0,0,0.18);
-  cursor: default;  /* visual only */
+  cursor: default; /* visual only */
+  line-height: 1;
+  white-space: nowrap;
 }
+
+/* --- New nav pills (Home / FAQ) --- */
+.nav-pill {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 12px 18px;
+  border-radius: 10px;
+  line-height: 1;
+  text-decoration: none;
+  color: #fff;
+  background: rgba(255,255,255,0.08);                  /* subtle glassy fill */
+  border: 2px solid rgba(255,255,255,0.25);            /* light outline to match the CTA vibe */
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  white-space: nowrap;
+  transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
+  backdrop-filter: blur(6px);                           /* optional: slight glass effect */
+}
+
+/* hover/focus states for better feel & a11y */
+.nav-pill:hover,
+.nav-pill:focus {
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.14);
+  outline: none;
+}
+
+.nav-pill:focus-visible {
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.35);
+}
+
+/* --- Mobile tweaks --- */
+@media (max-width: 640px) {
+  .top-actions {
+    top: 16px;
+    right: 16px;
+    gap: 8px;
+  }
+
+  .nav-pill,
+  .cta {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+    border-radius: 9px;
+  }
+}
+
 
 /* Center text block */
 .hero {
