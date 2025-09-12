@@ -158,25 +158,17 @@ body::before {
   .logo { height: 170px; }
   .cta { font-size: 0.85rem; padding: 8px 12px; top: 2
 
-/* Give inputs a small right margin so they don't hit the card edge */
+/* BB PATCH v1 START: input spacing & invalid styles */
 .field { padding-right: 8px; }
 
 .input {
   box-sizing: border-box;
   width: 100%;
-  margin-right: 8px;                 /* new: creates right margin */
+  margin-right: 8px; /* right margin so inputs don't touch card edge */
 }
 
-/* Invalid state feedback */
 .input.invalid {
   border-color: #ff9e9e !important;
   box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.12);
 }
-
-.error {
-  color: #ffd3d3;
-  font-size: 0.95rem;
-  margin-top: 8px;
-  display: none;
-}
-
+/* BB PATCH v1 END: input spacing & invalid styles */
