@@ -141,33 +141,35 @@
         <h1 class="contact-title">Get a Quote</h1>
         <p class="contact-subtitle">Tell us how to reach you and we’ll connect within 48 hours.</p>
 
-        <form id="quoteForm" novalidate>
-<div class="field">
-  <label class="label" for="name">Name *</label>
-  <input class="input" id="name" name="name" type="text" required
-         placeholder="Jane Doe" />
-</div>
+        <!-- BB PATCH v1 START: form fields -->
+<form id="quoteForm" novalidate>
+  <div class="field">
+    <label class="label" for="name">Name *</label>
+    <input class="input" id="name" name="name" type="text" required
+           placeholder="Jane Doe" />
+  </div>
 
-<div class="field">
-  <label class="label" for="email">Email *</label>
-  <input class="input" id="email" name="email" type="email" required
-         placeholder="name@example.com" />
-</div>
+  <div class="field">
+    <label class="label" for="email">Email *</label>
+    <input class="input" id="email" name="email" type="email" required
+           placeholder="name@example.com" />
+  </div>
 
-<div class="field">
-  <label class="label" for="phone">Phone *</label>
-  <input class="input" id="phone" name="phone" type="tel" required
-         inputmode="tel" autocomplete="tel"
-         placeholder="(555) 555-5555 or 5555555555" />
-</div>
+  <div class="field">
+    <label class="label" for="phone">Phone *</label>
+    <input class="input" id="phone" name="phone" type="tel" required
+           inputmode="tel" autocomplete="tel"
+           placeholder="(555) 555-5555 or 5555555555" />
+  </div>
 
+  <div class="error" id="errorBox">Please complete all required fields with valid information.</div>
 
-          <div class="error" id="errorBox">Please complete all required fields with valid information.</div>
+  <div class="actions">
+    <button type="submit" class="btn-submit">Submit</button>
+  </div>
+</form>
+<!-- BB PATCH v1 END: form fields -->
 
-          <div class="actions">
-            <button type="submit" class="btn-submit">Submit</button>
-          </div>
-        </form>
 
         <div class="success" id="successBox">
           <h1>Thanks for contacting us</h1>
@@ -190,6 +192,24 @@ const successBox = document.getElementById('successBox');
 function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
 // Accepts any formatting, but needs 10+ digits total
 function validPhone(v){ return v.replace(/\D/g,'').length >= 10; }
+
+function setInvalid(el, on) {
+  el.classList.toggle('invalid', !!on);
+}
+
+<!-- BB PATCH v1 START: submit handler -->
+<script>
+/* keep your existing ENDPOINT line above this block, or add it here:
+const ENDPOINT = 'https://script.google.com/macros/s/YOUR_EXEC/exec';
+*/
+
+const form = document.getElementById('quoteForm');
+const errorBox = document.getElementById('errorBox');
+const successBox = document.getElementById('successBox');
+
+function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+// Accepts 10–15 digits total; any separators OK (also accepts 10 straight digits)
+function validPhone(v){ const d = v.replace(/\D/g,''); return d.length >= 10 && d.length <= 15; }
 
 function setInvalid(el, on) {
   el.classList.toggle('invalid', !!on);
@@ -223,7 +243,7 @@ form.addEventListener('submit', async (e) => {
     setInvalid(emailEl, true);
   }
   if (!validPhone(phone)) {
-    problems.push('• Phone needs at least 10 digits (formatting like (555) 555-5555 is fine).');
+    problems.push('• Phone needs at least 10 digits (e.g., (555) 555-5555 or 5555555555).');
     setInvalid(phoneEl, true);
   }
 
@@ -234,12 +254,19 @@ form.addEventListener('submit', async (e) => {
   }
 
   try {
+    // Use x-www-form-urlencoded to avoid CORS preflight
+    const body = new URLSearchParams({ name, email, phone }).toString();
+
     const res = await fetch(ENDPOINT, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ name, email, phone })
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body
     });
-    if (!res.ok) throw new Error('Network response was not ok');
+
+    const text = await res.text();
+    let json; try { json = JSON.parse(text); } catch { json = { ok:false, error:text }; }
+
+    if (!res.ok || !json.ok) throw new Error(json.error || 'Server error');
 
     form.style.display = 'none';
     successBox.style.display = 'block';
@@ -249,5 +276,6 @@ form.addEventListener('submit', async (e) => {
   }
 });
 </script>
+<!-- BB PATCH v1 END: submit handler -->
 </body>
 </html>
