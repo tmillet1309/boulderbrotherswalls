@@ -215,67 +215,88 @@ function setInvalid(el, on) {
   el.classList.toggle('invalid', !!on);
 }
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  errorBox.style.display = 'none';
-  errorBox.textContent = '';
+<!-- BB PATCH v2 START: submit + enter + success UX -->
+<script>
+// Keep your ENDPOINT line here (must end with /exec):
+// const ENDPOINT = 'https://script.google.com/macros/s/YOUR_EXEC/exec';
 
-  const nameEl  = document.getElementById('name');
-  const emailEl = document.getElementById('email');
-  const phoneEl = document.getElementById('phone');
+document.addEventListener('DOMContentLoaded', () => {
+  const form       = document.getElementById('quoteForm');
+  const errorBox   = document.getElementById('errorBox');
+  const successBox = document.getElementById('successBox');
+  const inputs     = Array.from(form.querySelectorAll('input'));
 
-  const name  = nameEl.value.trim();
-  const email = emailEl.value.trim();
-  const phone = phoneEl.value.trim();
+  function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  function validPhone(v){ const d = v.replace(/\D/g,''); return d.length >= 10 && d.length <= 15; }
+  function setInvalid(el, on){ el.classList.toggle('invalid', !!on); }
 
-  let problems = [];
-
-  setInvalid(nameEl,  false);
-  setInvalid(emailEl, false);
-  setInvalid(phoneEl, false);
-
-  if (!name) {
-    problems.push('• Name is required.');
-    setInvalid(nameEl, true);
-  }
-  if (!validEmail(email)) {
-    problems.push('• Enter a valid email (e.g., name@example.com).');
-    setInvalid(emailEl, true);
-  }
-  if (!validPhone(phone)) {
-    problems.push('• Phone needs at least 10 digits (e.g., (555) 555-5555 or 5555555555).');
-    setInvalid(phoneEl, true);
-  }
-
-  if (problems.length) {
-    errorBox.innerHTML = problems.join('<br>');
-    errorBox.style.display = 'block';
-    return;
-  }
-
-  try {
-    // Use x-www-form-urlencoded to avoid CORS preflight
-    const body = new URLSearchParams({ name, email, phone }).toString();
-
-    const res = await fetch(ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body
+  // ENTER should submit from any input
+  inputs.forEach(el => {
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        form.requestSubmit(); // same as clicking the Submit button
+      }
     });
+  });
 
-    const text = await res.text();
-    let json; try { json = JSON.parse(text); } catch { json = { ok:false, error:text }; }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // prevent page refresh
+    errorBox.style.display = 'none';
+    errorBox.textContent = '';
 
-    if (!res.ok || !json.ok) throw new Error(json.error || 'Server error');
+    const nameEl  = document.getElementById('name');
+    const emailEl = document.getElementById('email');
+    const phoneEl = document.getElementById('phone');
 
-    form.style.display = 'none';
-    successBox.style.display = 'block';
-  } catch (err) {
-    errorBox.textContent = 'Submission failed. Please try again in a moment.';
-    errorBox.style.display = 'block';
-  }
+    const name  = nameEl.value.trim();
+    const email = emailEl.value.trim();
+    const phone = phoneEl.value.trim();
+
+    let problems = [];
+    setInvalid(nameEl,  false);
+    setInvalid(emailEl, false);
+    setInvalid(phoneEl, false);
+
+    if (!name)              { problems.push('• Name is required.'); setInvalid(nameEl,  true); }
+    if (!validEmail(email)) { problems.push('• Enter a valid email (e.g., name@example.com).'); setInvalid(emailEl, true); }
+    if (!validPhone(phone)) { problems.push('• Phone needs at least 10 digits (e.g., (555) 555-5555 or 5555555555).'); setInvalid(phoneEl, true); }
+
+    if (problems.length) {
+      errorBox.innerHTML = problems.join('<br>');
+      errorBox.style.display = 'block';
+      return;
+    }
+
+    try {
+      // Use x-www-form-urlencoded to avoid CORS preflight
+      const body = new URLSearchParams({ name, email, phone }).toString();
+      const res  = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body
+      });
+
+      const text = await res.text();
+      let json; try { json = JSON.parse(text); } catch { json = { ok:false, error:text }; }
+
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Server error');
+
+      // ✅ Clear UX: hide form, show thank-you message
+      form.style.display = 'none';
+      successBox.style.display = 'block';
+      // Optional: prevent back button from re-post confusion
+      history.replaceState({}, '', location.pathname + '#thanks');
+    } catch (err) {
+      console.error('Submit failed:', err);
+      errorBox.textContent = 'Submission failed. Please try again in a moment.';
+      errorBox.style.display = 'block';
+    }
+  });
 });
 </script>
+<!-- BB PATCH v2 END: submit + enter + success UX -->
+
 <!-- BB PATCH v1 END: submit handler -->
 </body>
 </html>
