@@ -172,3 +172,54 @@ body::before {
   box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.12);
 }
 /* BB PATCH v1 END: input spacing & invalid styles */
+
+  /* Mobile-only tweaks: prevent sideways scroll, fix gallery sizing, keep layout tidy */
+@media (max-width: 640px) {
+  html, body {
+    overflow-x: hidden;                 /* stop horizontal scrolling */
+  }
+
+  /* OUR WORK page */
+  .work-main {
+    padding: 96px 12px 64px;            /* a bit narrower padding on mobile */
+  }
+  .gallery {
+    grid-template-columns: 1fr;         /* single column on small screens */
+    gap: 10px;
+  }
+  .thumb {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .thumb img {
+    display: block;
+    width: 100%;
+    height: auto;                       /* prevents image overflow */
+    object-fit: cover;                  /* looks good if aspect ratio varies */
+  }
+
+  /* Top-right nav: keep buttons readable but compact */
+  .top-actions {
+    top: 16px;
+    right: 16px;
+    gap: 8px;
+  }
+  .nav-pill,
+  .cta {
+    font-size: 0.95rem;
+    padding: 10px 12px;
+    border-radius: 9px;
+  }
+}
+/* Mobile-only: bigger hero headlines on the home page */
+@media (max-width: 640px) {
+  .hero .build,
+  .hero .climb {
+    font-size: clamp(2.2rem, 12vw, 3.4rem);  /* roughly ~2× what you had on phones */
+    line-height: 1.05;
+    text-align: center;
+  }
+}
+
