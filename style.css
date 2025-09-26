@@ -213,13 +213,59 @@ body::before {
     border-radius: 9px;
   }
 }
-/* Mobile-only: bigger hero headlines on the home page */
+
+  /* ==================== MOBILE FIXES ==================== */
 @media (max-width: 640px) {
+  html, body {
+    overflow-x: hidden;        /* stop sideways scroll */
+  }
+
+  /* NAV: stack tighter, avoid overlapping logo */
+  .top-actions {
+    top: 12px;
+    right: 12px;
+    gap: 6px;
+    flex-wrap: wrap;           /* allow wrapping on small screens */
+    max-width: 90vw;
+    justify-content: flex-end;
+  }
+  .nav-pill,
+  .cta {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
+
+  /* HERO TEXT: make much bigger on mobile */
   .hero .build,
   .hero .climb {
-    font-size: clamp(2.2rem, 12vw, 3.4rem);  /* roughly ~2× what you had on phones */
-    line-height: 1.05;
+    font-size: clamp(2rem, 12vw, 3.5rem); /* ~2× larger on phones */
+    line-height: 1.1;
     text-align: center;
   }
+
+  /* GALLERY: single column, scrollable vertically */
+  .gallery {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    overflow-y: auto;
+    max-height: 80vh; /* allow scrolling if many images */
+  }
+  .thumb img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+
+  /* CONTACT FORM: shrink a bit to fit screen */
+  .contact-card {
+    width: 100%;
+    padding: 18px;
+  }
+  .input {
+    font-size: 1rem;
+  }
 }
+
 
