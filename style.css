@@ -1,0 +1,168 @@
+:root {
+  --orange:#FF6600;
+  --green:#145A32;
+  --sage:#d8e0d5;
+  --page-max: 1100px;  /* comfortable content width */
+}
+
+/* Page background & structure */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: linear-gradient(135deg, #d8e0d5 0%, #c7d2c7 25%, #b1c1ae 50%, #f0a56a 75%, #ea8f49 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Subtle texture */
+body::before {
+  content: "";
+  position: fixed;          /* cover full viewport smoothly while scrolling */
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: url("texture.png") center center repeat;
+  background-size: cover;
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+}
+
+/* Layout wrapper: makes footer sit at bottom even with little content */
+.page {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;               /* keep above texture */
+}
+
+/* ===== Header ===== */
+.site-header {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 24px 16px;       /* top spacing so nothing feels crammed */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.logo {
+  height: 140px;
+  width: auto;
+  display: block;
+}
+
+/* Top-right actions */
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cta {
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 12px 20px;
+  border-radius: 10px;
+  background: var(--orange);
+  color: #fff;
+  border: 2px solid rgba(0,0,0,0.08);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.nav-pill {
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 12px 18px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #fff;
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.25);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  white-space: nowrap;
+  transition: transform 120ms ease, background 120ms ease;
+  backdrop-filter: blur(6px);
+}
+.nav-pill:hover,
+.nav-pill:focus { transform: translateY(-1px); background: rgba(255,255,255,0.14); }
+
+/* ===== Main ===== */
+.hero {
+  flex: 1;                               /* take remaining height so footer sits at bottom */
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 24px 16px 48px;               /* bottom space so footer doesn’t crowd content */
+  text-align: center;
+}
+
+.hero h1 {
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  font-size: clamp(1.56rem, 4vw, 3.3rem);
+  margin: 0.35rem 0;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.22);
+}
+.build { color: var(--green); }
+.climb { color: var(--orange); }
+
+/* Welcome section */
+.welcome {
+  margin-top: 1.75rem;
+  text-align: center;
+  padding: 1rem;
+}
+.welcome-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  margin-bottom: 1.5rem;
+}
+.welcome h1 {
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  margin-bottom: 0.8rem;
+  color: #222;
+}
+.welcome h2 {
+  font-size: clamp(1.2rem, 2.8vw, 1.6rem);
+  font-weight: 500;
+  line-height: 1.4;
+  color: #333;
+  margin-bottom: 1rem;
+}
+.welcome .tagline {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--green);
+  margin-top: 0.5rem;
+}
+
+/* ===== Footer ===== */
+.footer-note {
+  text-align: center;
+  padding: 20px 16px;                    /* comfortable space; not crowded */
+  font-weight: 700;
+  color: var(--sage);
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.18);
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  background: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -6px 16px rgba(0,0,0,0.12);
+}
+
+/* ===== Mobile tweaks ===== */
+@media (max-width: 640px) {
+  .logo { height: 110px; }
+  .top-actions { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .nav-pill, .cta { font-size: 0.9rem; padding: 10px 12px; border-radius: 9px; }
+  .hero { padding: 16px 12px 44px; }
+}
